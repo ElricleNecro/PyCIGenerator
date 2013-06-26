@@ -1,0 +1,2 @@
+recursive-include src *.pyx generation.c gadget.c tree.c types.c
+recursive-include include *.pxd *.h

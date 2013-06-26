@@ -1,0 +1,14 @@
+test*/*
+build/*
+Bak.make
+King.log
+ci_king
+King.log
+Cond-init.tar.gz
+src/generation_py.c
+src/*_py.c
+Verif
+seed.dat
+
+src/main_bak.c
+src/main.c
