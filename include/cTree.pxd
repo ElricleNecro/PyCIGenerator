@@ -1,4 +1,5 @@
-from Gene_Bind cimport _particule_data, Particule
+#from Gene_Bind cimport _particule_data, Particule
+from cTypes cimport _particule_data, Particule
 
 cdef extern from "tree.h":
 	cdef struct _tnoeud:
@@ -19,4 +20,5 @@ cdef extern from "tree.h":
 	double Tree_GetG()
 	TNoeud Create_Tree(Particule posvits, const int NbParticule, const int NbMin, const _particule_data center, const double taille)
 	double Tree_CalcPot(TNoeud root, const Particule part, const double accept, const double soft)
+	void Tree_Free(TNoeud root)
 

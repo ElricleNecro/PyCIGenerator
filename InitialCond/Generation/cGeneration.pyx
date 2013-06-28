@@ -4,69 +4,19 @@ cimport numpy as np
 cimport cython
 
 cimport King_Bind as kb
-cimport Gene_Bind as gb
+cimport cGeneration as gb
 #cimport King      as kg
 
 from libc.stdlib cimport malloc, free
 
-cdef class Array2DWrapper:
-	"""Get from : http://gael-varoquaux.info/blog/?p=157
-	"""
-	cdef void* data_ptr
-	cdef int size[2]
-
-	cdef set_data(self, int size[2], void* data_ptr):
-		""" Set the data of the array
-		This cannot be done in the constructor as it must recieve C-level
-		arguments.
-
-		Parameters:
-		-----------
-		size: int
-		Length of the array.
-		data_ptr: void*
-		Pointer to the data            
-		"""
-		self.data_ptr = data_ptr
-		self.size[0] = size[0]
-		self.size[1] = size[1]
-
-cdef class Array1DWrapper:
-	"""Get from : http://gael-varoquaux.info/blog/?p=157
-	"""
-	cdef void* data_ptr
-	cdef int size
-
-	cdef set_data(self, int size, void* data_ptr):
-		""" Set the data of the array
-		This cannot be done in the constructor as it must recieve C-level
-		arguments.
-
-		Parameters:
-		-----------
-		size: int
-		Length of the array.
-		data_ptr: void*
-		Pointer to the data            
-		"""
-		self.data_ptr = data_ptr
-		self.size = size
-
-	#def __array__(self):
-		#""" Here we use the __array__ method, that is called when numpy
-		#tries to get an array from the object."""
-		#cdef np.npy_intp shape[2]
-		#shape[0] = <np.npy_intp> self.size
-		## Create a 1D array, of length 'size'
-		#ndarray = np.PyArray_SimpleNewFromData(2, shape,
-
-		#return ndarray
+cimport cTypes
+import  cTypes
 
 cdef class King:
 	cdef kb.King _obj
 	cdef int N
 	cdef double r_grand
-	cdef gb.Particule part
+	cdef cTypes.Particule part
 
 	def __cinit__(self, double w0, double rc, double sv, double G = 6.67e-11):
 		kb.King_SetG(G)
@@ -189,28 +139,33 @@ cdef class King:
 		if self.N == 0:
 			raise ValueError("You should call setM or SolveAll before calling this method.")
 
-		self.part = <gb._particule_data *>malloc( self.N * sizeof(gb._particule_data))
+		self.part = <cTypes._particule_data *>malloc( self.N * sizeof(cTypes._particule_data))
 
 		gb.King_Generate(self._obj, self.N, &self.r_grand, self.part, &seed)
 
 		return seed
 
-	property Particule:
+	cdef cTypes.Particules _get_part(self):
+		#ret = cTypes.Particules()
+		#ret.set_data(self.part, self.N)
+		cdef cTypes.Particules ret
+		ret = cTypes.FromPointer(self.part, self.N)
+		return ret
+
+	property Part:
 		def __get__(self):
 			if self.part is not NULL:
-				ret = Array1DWrapper()
-				ret.set_data(self.N, self.part)
-				return ret
+				return self._get_part()
 
 cdef class Object:
-	cdef gb.Particule part
+	cdef cTypes.Particule part
 	cdef int N
 
 	def __cinit__(self, int N):
 		self.N    = N
 		if self.N <= 0:
 			raise ValueError("N cannot be negative or null.")
-		self.part = <gb._particule_data *>malloc( self.N * sizeof(gb._particule_data))
+		self.part = <cTypes._particule_data *>malloc( self.N * sizeof(cTypes._particule_data))
 		if self.part is NULL:
 			raise MemoryError()
 

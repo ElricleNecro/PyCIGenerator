@@ -1,13 +1,5 @@
 cimport King_Bind as kb
-
-cdef extern from "types.h":
-	cdef struct _particule_data:
-		double Pos[3]
-		double Vit[3]
-		double m
-		int Id
-		int Type
-	ctypedef _particule_data* Particule
+from cTypes cimport Particule
 
 cdef extern from "generation.h":
 	double** carree_homo(const double rmax, const int NbPart, long *seed)
