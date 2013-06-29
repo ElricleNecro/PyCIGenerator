@@ -1,5 +1,5 @@
 from libc.stdlib cimport malloc, free
-from cTypes cimport _particule_data, Particule
+from Types cimport _particule_data, Particule
 
 cdef class Array2DWrapper:
 	"""Get from : http://gael-varoquaux.info/blog/?p=157
@@ -54,22 +54,6 @@ cdef class Array1DWrapper:
 
 		#return ndarray
 
-cdef class Particules:
-	#cdef Particule ptr_data
-	#cdef readonly int N
-
-	cdef set_data(self, Particule p, int N):
-		self.N        = N
-		self.ptr_data = p
-
-	def __dealloc__(self):
-		if self.ptr_data is not NULL:
-			free(self.ptr_data)
-
-	FromPointer = staticmethod(FromPointer)
-	Single      = staticmethod(Single)
-	FromPyData  = staticmethod(FromPyData)
-
 cdef Particules FromPointer(Particule p, int N):
 	tmp = Particules()
 
@@ -117,3 +101,20 @@ cpdef FromPyData(lst, colType=None, colm=None, colId=None):
 	res.set_data(tmp, len(lst))
 
 	return res
+
+cdef class Particules:
+	#cdef Particule ptr_data
+	#cdef readonly int N
+
+	cdef set_data(self, Particule p, int N):
+		self.N        = N
+		self.ptr_data = p
+
+	def __dealloc__(self):
+		if self.ptr_data is not NULL:
+			free(self.ptr_data)
+
+	#FromPointer = staticmethod(FromPointer)
+	#Single      = staticmethod(Single)
+	#FromPyData  = staticmethod(FromPyData)
+

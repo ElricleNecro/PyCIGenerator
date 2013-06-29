@@ -7,13 +7,12 @@ cdef extern from "types.h":
 		int Type
 	ctypedef _particule_data* Particule
 
+cdef Particules FromPointer(Particule p, int N)
+cdef Particules Single(_particule_data p)
+cpdef FromPyData(lst, colType=?, colm=?, colId=?)
+
 cdef class Particules:
 	cdef Particule ptr_data
 	cdef readonly int N
 	cdef set_data(self, Particule p, int N)
-
-cdef Particules FromPointer(Particule p, int N)
-cdef Particules Single(_particule_data p)
-#cpdef FromPyData(lst, colType, colm, colId)
-cpdef FromPyData(lst, colType=?, colm=?, colId=?)
 

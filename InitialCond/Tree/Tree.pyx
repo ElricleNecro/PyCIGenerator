@@ -1,13 +1,13 @@
-cimport cTree as t
+cimport Tree as t
 
-cimport cTypes
-import  cTypes
+cimport InitialCond.Types as Types
+import InitialCond.Types as Types
 
 cdef class cOctTree:
 	cdef t.TNoeud root
 	cdef int NbMin, N
 
-	cdef set_data(self, cTypes.Particule posvits, int Nb, int NbMin, cTypes._particule_data center, double taille):
+	cdef set_data(self, Types.Particule posvits, int Nb, int NbMin, Types._particule_data center, double taille):
 		self.NbMin = NbMin
 		self.N = Nb
 		self.root = t.Create_Tree(posvits, Nb, NbMin, center, taille)
@@ -44,6 +44,6 @@ cdef class cOctTree:
 		return 2. * v / pot
 
 cdef class OctTree(cOctTree):
-	def __cinit__(self, cTypes.Particules posvits, int NbMin, cTypes.Particules center, double taille):
+	def __cinit__(self, Types.Particules posvits, int NbMin, Types.Particules center, double taille):
 		self.set_data(posvits.ptr_data, posvits.N, NbMin, center.ptr_data[0], taille)
 
