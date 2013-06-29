@@ -14,3 +14,7 @@ src/main_bak.c
 src/main.c
 
 kinginking.c
+InitialCond/Generation/Generation.c
+InitialCond/Tree/Tree.c
+InitialCond/Types.c
+bak/*
