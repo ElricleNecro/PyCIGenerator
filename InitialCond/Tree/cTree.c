@@ -8,10 +8,6 @@ int Level_Max = 50;
 int NB_bro = 8;
 int Zc = 0;
 double G = 6.67e-11;
-//#define NEAREST(x, boxhalf, boxsize) (((x)>boxhalf)?((x)-boxsize):(((x)<-boxhalf)?((x)+boxsize):(x)))
-
-//#include "tree_create.c"
-//#include "tree_voisin.c"
 
 void Tree_SetG(double nG)
 {
@@ -22,6 +18,15 @@ double Tree_GetG(void)
 	return G;
 }
 
+void Echange(Particule a, Particule b)
+{
+	Part tmp;
+
+	memcpy(&tmp, a, sizeof(struct _particule_data));
+	memcpy(a,    b, sizeof(struct _particule_data));
+	memcpy(b, &tmp, sizeof(struct _particule_data));
+}
+
 TNoeud Create_Tree(Particule posvits, const int NbPart, const int NbMin, const struct _particule_data Center, const double taille)
 {
 	TNoeud root = NULL;
@@ -29,6 +34,8 @@ TNoeud Create_Tree(Particule posvits, const int NbPart, const int NbMin, const s
 	if( root == NULL )
 		fprintf(stderr, "Erreur avec Tree_Init !!!\n"),exit(EXIT_FAILURE);
 	root->first = &posvits[0];
+
+	//fprintf(stderr, "%g %g %g %g\n", Center.Pos[0], Center.Pos[1], Center.Pos[2], taille);
 
 	//qsort(posvits, (size_t)NbPart, sizeof(Part), qsort_partstr);
 
@@ -197,6 +204,20 @@ void Tree_Calc(TNoeud t1, const int NbPart)
 			fprintf(stderr, "\033[36m|_ %s:: Level = %d ==> Prise : %d\033[00m\n", __func__, t1->level, t1->N);
 #endif
 		}
+#ifdef P_DBG_TREECODE_P_CALC
+		else
+		{
+			//for(int j = 0; j<=t1->level; j++) fprintf(stderr, " ");
+			fprintf (stderr, "\033[33m|_ %s:: Level = %d ; x in ]%.16g, %.16g] ; y in ]%.16g, %.16g] ; z in ]%.16g, %.16g] :: P = (%.16g, %.16g, %.16g)::%d\033[00m\n",
+					__func__,
+					t1->level,
+					t1->x - t1->cote / 2.0, t1->x + t1->cote / 2.0,
+					t1->y - t1->cote / 2.0, t1->y + t1->cote / 2.0,
+					t1->z - t1->cote / 2.0, t1->z + t1->cote / 2.0,
+					t1->first[i].Pos[0], t1->first[i].Pos[1], t1->first[i].Pos[2], t1->first[i].Id
+				);
+		}
+#endif
 	}
 
 	if( t1->N != 0 )
@@ -310,6 +331,7 @@ int Tree_Build2(TNoeud root, int NbPart, int NbMin)
 	if( t1->N == 0 )
 		t1->first = NULL;
 
+	//fprintf(stderr, "Brother %d : %d Particules.\n", bro, t1->N);
 	Nb_use += t1->N;
 	bro++;
 
@@ -334,6 +356,8 @@ int Tree_Build2(TNoeud root, int NbPart, int NbMin)
 
 		if( t1->N == 0 )
 			t1->first = NULL;
+
+		//fprintf(stderr, "Brother %d : %d Particules.\n", bro, t1->N);
 
 		Nb_use += t1->N;
 		bro++;
