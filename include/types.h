@@ -77,4 +77,14 @@ int    qsort_partaxe(const void *a, const void *b) __attribute__ ((__const__));
  */
 void   Echange(Particule a, Particule b);
 
+/**
+ * Fonction concaténant 2 tableaux de type Particule et retourne le nouveau tableau.
+ * @param a Premier tableau à concaténer.
+ * @param Na Taille du premier tableau.
+ * @param b Second tableau à concaténer.
+ * @param Nb Taille du second tableau.
+ * @return NULL si l'allocation échoue, le nouveau pointeur sinon.
+ */
+Particule Concat(const Particule a, const int Na, const Particule b, const int Nb);
+
 #endif /* end of include guard: TYPES_H */
