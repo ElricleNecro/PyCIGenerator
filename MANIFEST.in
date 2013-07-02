@@ -1,2 +1,4 @@
-recursive-include src *.pyx generation.c gadget.c tree.c types.c
+recursive-include InitialCond *.pyx generation.c gadget.c tree.c types.c
 recursive-include include *.pxd *.h
+include ci_py
+include config.ci
