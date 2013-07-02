@@ -58,4 +58,6 @@ bool write_gadget_conf( const char *filename, const char *ci_file,
 			const double MConv,
 			const double Soft);
 
+bool Gadget_Write(const char *name, const Header header, const Particule part);
+
 #endif /* end of include guard: GADGET_H */
