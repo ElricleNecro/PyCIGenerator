@@ -17,4 +17,5 @@ kinginking.c
 InitialCond/Generation/Generation.c
 InitialCond/Tree/Tree.c
 InitialCond/Types.c
+InitialCond/Gadget/Gadget.c
 bak/*
