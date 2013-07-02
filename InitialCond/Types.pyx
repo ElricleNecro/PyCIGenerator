@@ -1,5 +1,7 @@
 from libc.stdlib cimport malloc, free
-from Types cimport _particule_data, Particule
+#from Types cimport _particule_data, Particule
+
+cimport Types
 
 cdef class Array2DWrapper:
 	"""Get from : http://gael-varoquaux.info/blog/?p=157
@@ -54,18 +56,18 @@ cdef class Array1DWrapper:
 
 		#return ndarray
 
-cdef Particules FromPointer(Particule p, int N):
+cdef Particules FromPointer(Types.Particule p, int N):
 	tmp = Particules()
 
 	tmp.set_data(p, N)
 
 	return tmp
 
-cdef Particules Single(_particule_data p):
-	cdef Particule tmp = NULL
+cdef Particules Single(Types._particule_data p):
+	cdef Types.Particule tmp = NULL
 	res = Particules()
 
-	tmp = <_particule_data *>malloc( sizeof(_particule_data))
+	tmp = <Types._particule_data *>malloc( sizeof(Types._particule_data))
 	if tmp is NULL:
 		raise MemoryError()
 
@@ -76,9 +78,9 @@ cdef Particules Single(_particule_data p):
 	return res
 
 cpdef FromPyData(lst, colType=None, colm=None, colId=None):
-	cdef Particule tmp = NULL
+	cdef Types.Particule tmp = NULL
 
-	tmp = <_particule_data *>malloc(len(lst)* sizeof(_particule_data))
+	tmp = <Types._particule_data *>malloc(len(lst)* sizeof(Types._particule_data))
 	if tmp is NULL:
 		raise MemoryError()
 
@@ -103,9 +105,6 @@ cpdef FromPyData(lst, colType=None, colm=None, colId=None):
 	return res
 
 cdef class Particules:
-	#cdef Particule ptr_data
-	#cdef readonly int N
-
 	cdef set_data(self, Particule p, int N):
 		self.N        = N
 		self.ptr_data = p
@@ -113,6 +112,16 @@ cdef class Particules:
 	def __dealloc__(self):
 		if self.ptr_data is not NULL:
 			free(self.ptr_data)
+			self.ptr_data = NULL
+
+	cpdef Types.Particules Add(self, Types.Particules p):
+		res = FromPointer( Types.Concat(self.ptr_data, self.N, p.ptr_data, p.N), self.N + p.N )
+		if res.ptr_data is NULL:
+			raise MemoryError
+		return res
+
+	def __add__(self, p):
+		return self.Add(p)
 
 	#FromPointer = staticmethod(FromPointer)
 	#Single      = staticmethod(Single)
