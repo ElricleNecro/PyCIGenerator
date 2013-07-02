@@ -1,18 +1,215 @@
+#! /usr/bin/env python
+# -*- coding:Utf8 -*-
+
+import os
+import configparser as cfg
 import argparse as ag
-import Generate as g
+import InitialCond.Generation as g
+import InitialCond.Gadget as gad
+
+from astropy import constants as const
 
 description = """
 Génère les conditions initiales selon certains paramètres.
 """
 
-def main(opt):
-	pass
+systemwide_cf = '../share/ci_py/config.ini'
+userwide_cf   = os.getenv("HOME") + '/.local/share/ci_py/config.ini'
 
-if __name__ == '__main__':
+def prepare_gadget_file(cfg):
+	print(cfg.get('file'))
+	file                        = gad.Gadget(cfg.get('file'))
+
+	file.time                   = cfg.getfloat('time')
+	file.redshift               = cfg.getfloat('redshift')
+
+	file.BoxSize                = cfg.getfloat('BoxSize')
+
+	file.Omega0                 = cfg.getfloat('Omega0')
+	file.OmegaLambda            = cfg.getfloat('OmegaLambda')
+	file.HubbleParam            = cfg.getfloat('HubbleParam')
+
+	file.flag_sfr               = cfg.getint('flag_sfr')
+	file.flag_feedback          = cfg.getint('flag_feedback')
+	file.flag_cooling           = cfg.getint('flag_cooling')
+	file.flag_stellarage        = cfg.getint('flag_stellarage')
+	file.flag_metals            = cfg.getint('flag_metals')
+	file.flag_entropy_instead_u = cfg.getint('flag_entropy_instead_u')
+
+	return file
+
+def GenerateKing(obj_cfg, seed, offset):
+	G = obj_cfg.getfloat('G')
+	if G is None:
+		G = const.G.value
+	tmp = g.GKing(
+			obj_cfg.getfloat('W0'),
+			obj_cfg.getfloat('rc'),
+			obj_cfg.getfloat('sv'),
+			G=G
+		)
+	tmp.SolveAll(obj_cfg.getint('N'))
+	seed = tmp.Generate(
+			seed,
+			id=offset,
+			Type=obj_cfg.getint('type')
+		)
+	return seed, tmp
+
+def GenerateSphere(obj_cfg, seed, offset, config):
+	tmp = g.Sphere(
+		obj_cfg.getint('N'),
+		m=obj_cfg.getfloat('m'),
+		id=offset,
+		Type=obj_cfg.getint('type')
+	)
+
+	position = True
+	for todo, position in zip(['pos', 'vit'], [True, False]):
+		pos = obj_cfg.get(todo)
+		method = config[pos].get('method')
+
+		if method == 'homo':
+			seed = tmp.homo(
+				config[pos].getfloat('R'),
+				seed,
+				pos=position,
+				Id_from=offset
+			)
+		elif method == 'gauss':
+			seed = tmp.gauss(
+				config[pos].getfloat('sig'),
+				seed,
+				pos=position,
+				Id_from=offset
+			)
+		elif method == 'gauss_limited':
+			seed = tmp.gauss_limited(
+				config[pos].getfloat('sig'),
+				config[pos].getfloat('broke'),
+				seed,
+				pos=position,
+				Id_from=offset
+			)
+		else:
+			raise ValueError("Method '%s' unknown!"%method)
+
+		position = False
+
+	G = obj_cfg.getfloat('G')
+	if G is None:
+		G = const.G.value
+	Vir = obj_cfg.getfloat('viriel')
+	if Vir is not None:
+		tmp.SetViriel(Vir, G=G)
+
+	return seed, tmp
+
+def Read_Conf(fname):
+	if os.path.isfile(systemwide_cf):
+		sysdef = cfg.ConfigParser()
+		sysdef.read(systemwide_cf)
+	else:
+		sysdef = None
+
+	if os.path.isfile(userwide_cf):
+		defaults = cfg.ConfigParser(sysdef)
+		defaults.read(userwide_cf)
+	else:
+		defaults = sysdef
+
+	if fname is not None and os.path.isfile(fname):
+		config = cfg.ConfigParser(defaults)
+		config.read(fname)
+	else:
+		config = defaults
+
+	return config
+
+def main(opt):
+	config = Read_Conf(opt.config)
+
+	seed = config['config'].getint('seed')
+	fich = prepare_gadget_file(config['Gadget'])
+
+	obj    = list()
+	offset = 1
+	NbPart = [0]*6
+	Masses = [0]*6
+	for sect in config:
+		obj_cfg = config[sect]
+
+		if 'King' in sect :
+			seed, tmp = GenerateKing(obj_cfg, seed, offset)
+			obj.append(tmp.Part)
+			offset += obj_cfg.getint('N')
+			Masses[obj_cfg.getint('type')] = tmp.m
+			NbPart[obj_cfg.getint('type')] += obj_cfg.getint('N')
+		elif 'Sphere' in sect:
+			seed, tmp = GenerateSphere(obj_cfg, seed, offset, config)
+			obj.append(tmp.Part)
+			offset += obj_cfg.getint('N')
+			Masses[obj_cfg.getint('type')] = tmp.m
+			NbPart[obj_cfg.getint('type')] += obj_cfg.getint('N')
+		elif 'Cube' in sect:
+			raise NotImplemented
+
+	sum = obj[0]
+	del obj[0]
+	for a in obj:
+		sum = sum + a
+
+	fich.Part = sum
+	fich.npart = NbPart
+	fich.mass = Masses
+	fich.Write()
+
+	#R    = 1.0
+	#Test = g.Sphere(opt.N, id=1, Type=4)
+	#seed = -32
+	#print("Generating a sphere of size %g"%R)
+	#seed = Test.homo(R, seed, pos=True)
+	#seed = Test.gauss(2.0, seed, pos=False)
+	#print("Viriel de la sphere : ", Test.GetViriel(15, 0.5, 0.0))
+	#Test.SetViriel(-0.5)
+	#print("Viriel de la sphere : ", Test.GetViriel(15, 0.5, 0.0))
+
+	#Kg   = g.GKing(1.5, 190e18, 190.)
+	#Kg.SolveAll(opt.N)
+	#seed = Kg.Generate(seed, id=opt.N+1, Type=5)
+
+	#fich       = gad.Gadget("test.dat")
+	#fich.Part  = Test.Part + Kg.Part
+	#NbPart     = [0]*6
+	#NbPart[4]  = opt.N
+	#NbPart[5]  = opt.N
+	#Masses     = [0] * 6
+	#Masses[4]  = Test.m
+	#Masses[5]  = Kg.m
+	#fich.npart = NbPart
+	#fich.mass  = Masses
+	#fich.Write()
+
+def create_opt():
 	parser = ag.ArgumentParser(description=description)
 
-	opt = parser.parse_args()
+	#---------------------------------------------------------------------------------------------------------
+	# Options générales :
+	#---------------------------------------------------------------------------------------------------------
+	parser.add_argument("-c", dest='config', type=str, default=None, help="Configuration file name. Not yet implemented!")
 
-	main(opt)
+	#---------------------------------------------------------------------------------------------------------
+	# Création des sous commandes :
+	#---------------------------------------------------------------------------------------------------------
+	#subparsers = parser.add_subparsers()
+
+
+	#parser.add_argument("N", metavar="Number", type=int, help="Nombre de particule à génèrer.")
+
+	return parser.parse_args()
+
+if __name__ == '__main__':
+
+	main(create_opt())
 
 # vim: ft=python
