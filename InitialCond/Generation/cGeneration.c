@@ -309,44 +309,49 @@ double** sphere_homo(const double rmax, const int NbPart, long *seed)
 	       xm   = 0.0,
 	       ym   = 0.0,
 	       zm   = 0.0;
-	int i, d;
+	int i;
 
 	pos = double2d(NbPart, 3);
 
-//	FILE *fich = NULL;
-//	fich = fopen("Seed_verif", "w");
-	for (i = 0, d=0; i < NbPart; i++)
-	{
-
-		xx = 1.0-2.0*ran2(seed);
-//		fprintf(fich, "%ld\t", seed);
-		yy = 1.0-2.0*ran2(seed);
-//		fprintf(fich, "%ld\t", seed);
-		zz = 1.0-2.0*ran2(seed);
-//		fprintf(fich, "%ld\n", seed);
-		rr = sqrt(xx*xx + yy*yy + zz*zz);
-		if(rr >=  1.0)
-		{
-			i--;
-			continue;
-		}
-		pos[i][0] = xx*rmax/2.0;
-		pos[i][1] = yy*rmax/2.0;
-		pos[i][2] = zz*rmax/2.0;
-		d++;
-	}
-//	fclose(fich);
-
-	xm = 0.0;
-	ym = 0.0;
-	zm = 0.0;
-
 	for (i = 0; i < NbPart; i++)
 	{
+		xx = pow(ran2(seed), 1.0/3.0) * rmax;	// Rayon
+		yy = 2.0*M_PI * ran2(seed);		// Phi entre 0, 2\pi
+		zz = acos(1. - 2.0*ran2(seed));		// Theta entre 0, \pi
+
+		pos[i][0] = xx * sin(zz) * cos(yy);
+		pos[i][1] = xx * sin(zz) * sin(yy);
+		pos[i][2] = xx * cos(zz);
+
 		xm = xm + pos[i][0];
 		ym = ym + pos[i][1];
 		zm = zm + pos[i][2];
+
+		//xx = 1.0-2.0*ran2(seed);
+		//yy = 1.0-2.0*ran2(seed);
+		//zz = 1.0-2.0*ran2(seed);
+		//rr = sqrt(xx*xx + yy*yy + zz*zz);
+		//if(rr >=  1.0)
+		//{
+			//i--;
+			//continue;
+		//}
+		//pos[i][0] = xx*rmax/2.0;
+		//pos[i][1] = yy*rmax/2.0;
+		//pos[i][2] = zz*rmax/2.0;
+		//d++;
 	}
+
+	//xm = 0.0;
+	//ym = 0.0;
+	//zm = 0.0;
+
+	//for (i = 0; i < NbPart; i++)
+	//{
+		//xm = xm + pos[i][0];
+		//ym = ym + pos[i][1];
+		//zm = zm + pos[i][2];
+	//}
 
 	xm = xm/(float)(NbPart);
 	ym = ym/(float)(NbPart);
@@ -358,14 +363,6 @@ double** sphere_homo(const double rmax, const int NbPart, long *seed)
 		pos[i][1] = pos[i][1] - xm;
 		pos[i][2] = pos[i][2] - xm;
 	}
-//	fich=fopen("Stat_homo.res", "w");
-//	for (int i = 0; i < NbPart; i++) {
-//		for (int j = 0; j < 3; j++) {
-//			fprintf(fich, "%g\t", pos[i][j]);
-//		}
-//		fprintf(fich, "\n");
-//	}
-//	fclose(fich);
 
 	return pos;
 }
