@@ -19,3 +19,4 @@ InitialCond/Tree/Tree.c
 InitialCond/Types.c
 InitialCond/Gadget/Gadget.c
 bak/*
+**/__pycache__/*
