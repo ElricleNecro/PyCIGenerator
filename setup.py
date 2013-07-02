@@ -106,7 +106,8 @@ setup(
 	cmdclass    = {'build_ext': build_ext},
 	packages    = packages,
 	data_files  = [
-		('bin', ['ci_py'])
+		('bin', ['ci_py']),
+		('share/ci_py', ['config.ci'])
 	],
 	ext_modules = cythonize( extensions ,
 			 include_path = [ '.', King.get_include() ]
