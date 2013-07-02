@@ -60,13 +60,28 @@ int qsort_partaxe(const void *a, const void *b)
 		return 0;
 }
 
+Particule Concat(const Particule a, const int Na, const Particule b, const int Nb)
+{
+	Particule new = malloc( sizeof(struct _particule_data) * (Na + Nb) );
+	if(new == NULL)
+	{
+		perror("Concat Error:");
+		return NULL;
+	}
+
+	memcpy(new,      a, Na * sizeof(struct _particule_data));
+	memcpy(&new[Na], b, Nb * sizeof(struct _particule_data));
+
+	return new;
+}
+
 void Echange(Particule a, Particule b)
 {
-	Part tmp;
+	Particule tmp;
 
-	memcpy(&tmp, a, sizeof(Part));
-	memcpy(a,    b, sizeof(Part));
-	memcpy(b, &tmp, sizeof(Part));
+	memcpy(tmp, a, sizeof(struct _particule_data));
+	memcpy(a,   b, sizeof(struct _particule_data));
+	memcpy(b, tmp, sizeof(struct _particule_data));
 /*	Part tmp;
 
 	tmp.x  = a->x;
