@@ -76,6 +76,7 @@ def makeExtension(extName, test=False, **kwargs):
 
 extNames = scandir("InitialCond")
 
+#extensions = [makeExtension(name, include_dirs = [ "include/" ]) for name in extNames]
 extensions = []
 for name in extNames:
 	if "Generation" in name:
@@ -92,7 +93,7 @@ for name in extNames:
 #--------------------------------------------------------------------------------------------------------------
 # Packages names:
 #--------------------------------------------------------------------------------------------------------------
-packages = [ 'InitialCond', 'InitialCond.Tree', 'InitialCond.Generation' ]
+packages = [ 'InitialCond', 'InitialCond.Tree', 'InitialCond.Generation', 'InitialCond.Gadget' ]
 
 #--------------------------------------------------------------------------------------------------------------
 # Call the setup function:
