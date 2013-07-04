@@ -123,6 +123,45 @@ cdef class Particules:
 	def __add__(self, p):
 		return self.Add(p)
 
+	property Velocities:
+		def __get__(self):
+			cdef unsigned int i, j
+			cdef list res, tmp
+
+			res = list()
+			for i in range(self.N):
+				tmp = list()
+				for j in range(3):
+					tmp.append(self.ptr_data[i].Vit[j])
+				res[i].append(tmp)
+
+			return res
+
+	property Positions:
+		def __get__(self):
+			cdef unsigned int i, j
+			cdef list res, tmp
+
+			res = list()
+			for i in range(self.N):
+				tmp = list()
+				for j in range(3):
+					tmp.append(self.ptr_data[i].Pos[j])
+				res.append(tmp)
+
+			return res
+
+	def __repr__(self):
+		ret = "<Particules Object %p"%id(self)
+		if self.N > 0 or self.ptr_data is not NULL:
+			ret += " from id=%d"%self.ptr_data[0].Id + " to %d>"%self.ptr_data[self.N-1].Id
+		else:
+			ret += " uninitialized>"
+		return ret
+
+	def __str__(self):
+		return self.__repr__()
+
 	#FromPointer = staticmethod(FromPointer)
 	#Single      = staticmethod(Single)
 	#FromPyData  = staticmethod(FromPyData)
