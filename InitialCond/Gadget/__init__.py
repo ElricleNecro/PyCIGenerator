@@ -2,3 +2,5 @@
 # -*- coding:Utf8 -*-
 
 from .Gadget import *
+from .Config import *
+
