@@ -22,11 +22,6 @@ cdef class GKing(King.KingModel):
 	cdef double r_grand
 	cdef Types.Particules part
 
-	#def __dealloc__(self):
-		#if self.part is not NULL:
-			#free(self.part)
-			#self.part = NULL
-
 	cpdef long Generate(self, long seed, int id=0, int Type=2):
 		cdef unsigned int i
 
@@ -47,11 +42,6 @@ cdef class GKing(King.KingModel):
 		return seed
 
 	cdef Types.Particules _get_part(self):
-		#ret = cTypes.Particules()
-		#ret.set_data(self.part, self.N)
-		#cdef Types.Particules ret
-		#ret = Types.FromPointer(self.part, self.N)
-		#return ret
 		return self.part
 
 	property Part:
@@ -107,6 +97,7 @@ cdef class pObject:
 
 	cdef Types.Particules _get_part(self):
 		return self.part
+
 	property Part:
 		def __get__(self):
 			if self.part.ptr_data is not NULL:
