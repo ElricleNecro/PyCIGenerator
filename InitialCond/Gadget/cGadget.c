@@ -28,7 +28,7 @@ bool Gadget_Write(const char *name, const Header header, const Particule part)
 
 #define SKIP  {fwrite(&blksize,sizeof(int),1,fd);}
 
-	fprintf(stderr, "File name : %s\n", name);
+	//fprintf(stderr, "File name : %s\n", name);
 
 	if(!(fd = fopen(name, "w")))
 	{
@@ -36,20 +36,20 @@ bool Gadget_Write(const char *name, const Header header, const Particule part)
 		return false;
 	}
 
-	printf("\033[36mHeader du fichier Gadget (format 1) :\033[00m\n");
-	printf("\033[34m\tNombre de fichier par snapshot : %d\n", header.num_files);
-	printf("\tMasse et nombre d'éléments des catégories d'objet :\n");
-	for(int i = 0; i < 6; i++)
-		printf("\t\t%s : Masse %g, et %d élément%c (total : %d)\n", (i == 0)?"Gaz":( (i == 1)?"Halo":( (i == 2)?"Disk":( (i==3)?"Bulge":( (i==4)?"Stars":"Bndry" )))), header.mass[i], header.npart[i], (header.npart[i] > 1)?'s':' ', header.npartTotal[i]);
-	puts("\033[00m");
-	printf("\033[31m\tTaille de la boîte : %g\033[00m\n", header.BoxSize);
+	//printf("\033[36mHeader du fichier Gadget (format 1) :\033[00m\n");
+	//printf("\033[34m\tNombre de fichier par snapshot : %d\n", header.num_files);
+	//printf("\tMasse et nombre d'éléments des catégories d'objet :\n");
+	//for(int i = 0; i < 6; i++)
+		//printf("\t\t%s : Masse %g, et %d élément%c (total : %d)\n", (i == 0)?"Gaz":( (i == 1)?"Halo":( (i == 2)?"Disk":( (i==3)?"Bulge":( (i==4)?"Stars":"Bndry" )))), header.mass[i], header.npart[i], (header.npart[i] > 1)?'s':' ', header.npartTotal[i]);
+	//puts("\033[00m");
+	//printf("\033[31m\tTaille de la boîte : %g\033[00m\n", header.BoxSize);
 
 	blksize = sizeof(header);
-	fprintf(stderr, "Writing header (%d)...", blksize);
+	//fprintf(stderr, "Writing header (%d)...", blksize);
 	SKIP;
 	fwrite(&header, sizeof(header), 1, fd);
 	SKIP;
-	fprintf(stderr, " done\n");
+	//fprintf(stderr, " done\n");
 
 	blksize = 0;
 	for (int n = 0; n < 6; n++)
@@ -61,7 +61,7 @@ bool Gadget_Write(const char *name, const Header header, const Particule part)
 	}
 	blksize *= 3 * sizeof(float);
 
-	fprintf(stderr, "Writing positions (%d)...", blksize);
+	//fprintf(stderr, "Writing positions (%d)...", blksize);
 	SKIP;
 	for(int i=0; i<NbPart; i++)
 		for(int j=0; j<3; j++)
@@ -70,7 +70,7 @@ bool Gadget_Write(const char *name, const Header header, const Particule part)
 			fwrite(&to_write, sizeof(float), 1, fd);
 		}
 	SKIP;
-	fprintf(stderr, " done\n");
+	//fprintf(stderr, " done\n");
 
 	/*blksize = 0;*/
 	/*for (int n = 0; n < 6; n++)*/
@@ -79,7 +79,7 @@ bool Gadget_Write(const char *name, const Header header, const Particule part)
 	/*}*/
 	/*blksize *= 3 * sizeof(float);*/
 
-	fprintf(stderr, "Writing velocities (%d)...", blksize);
+	//fprintf(stderr, "Writing velocities (%d)...", blksize);
 	SKIP;
 	for(int i=0; i<NbPart; i++)
 		for(int j=0; j<3; j++)
@@ -88,15 +88,15 @@ bool Gadget_Write(const char *name, const Header header, const Particule part)
 			fwrite(&to_write, sizeof(float), 1, fd);
 		}
 	SKIP;
-	fprintf(stderr, " done\n");
+	//fprintf(stderr, " done\n");
 
 	blksize = NbPart * sizeof(unsigned int);
-	fprintf(stderr, "Writing identities (%d)...", blksize);
+	//fprintf(stderr, "Writing identities (%d)...", blksize);
 	SKIP;
 	for(int i=0; i<NbPart; i++)
 		fwrite(&part[i].Id, sizeof(unsigned int), 1, fd);
 	SKIP;
-	fprintf(stderr, " done\n");
+	//fprintf(stderr, " done\n");
 
 	blksize = ntot_withmasses*sizeof(float);
 	if( ntot_withmasses > 0 )
