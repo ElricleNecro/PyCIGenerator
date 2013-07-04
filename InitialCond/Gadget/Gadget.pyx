@@ -37,6 +37,49 @@ cdef class Gadget:
 	#def __dealloc__(self):
 		#free(self.filename)
 
+	def __repr__(self):
+		return  """Gadget file '{0}'. Header informations are:
+Simulation parameters:
+	Time       : {1}
+	num_files  : {2}
+	redshift   : {3}
+	BoxSize    : {4}
+	Particules : {5}
+	Masses     : {6}
+Physical parameters:
+	Omega0      : {7}
+	OmegaLambda : {8}
+	HubbleParam : {9}
+Simulation flags:
+	flag_sfr               : {10}
+	flag_feedback          : {11}
+	flag_cooling           : {12}
+	flag_stellarage        : {13}
+	flag_metals            : {14}
+	flag_entropy_instead_u : {15}
+The only gadget file format supported is the gadget 1.
+			""".format(
+				self.filename,
+				self.header.time,
+				self.header.num_files,
+				self.header.redshift,
+				self.header.BoxSize,
+				self.npart,
+				self.mass,
+				self.header.Omega0,
+				self.header.OmegaLambda,
+				self.header.HubbleParam,
+				self.header.flag_sfr,
+				self.header.flag_feedback,
+				self.header.flag_cooling,
+				self.header.flag_stellarage,
+				self.header.flag_metals,
+				self.header.flag_entropy_instead_u,
+			)
+
+	def __str__(self):
+		return self.__repr__()
+
 	cpdef Write(self):
 		cdef int res
 		cdef unsigned int i
