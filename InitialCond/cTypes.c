@@ -77,11 +77,11 @@ Particule Concat(const Particule a, const int Na, const Particule b, const int N
 
 void Echange(Particule a, Particule b)
 {
-	Particule tmp;
+	struct _particule_data tmp;
 
-	memcpy(tmp, a, sizeof(struct _particule_data));
-	memcpy(a,   b, sizeof(struct _particule_data));
-	memcpy(b, tmp, sizeof(struct _particule_data));
+	memcpy(&tmp, a, sizeof(struct _particule_data));
+	memcpy(a,    b, sizeof(struct _particule_data));
+	memcpy(b, &tmp, sizeof(struct _particule_data));
 /*	Part tmp;
 
 	tmp.x  = a->x;
