@@ -91,13 +91,13 @@ The only gadget file format supported is the gadget 1.
 		res = g.Gadget_Write(fname, self.header, self.part.ptr_data)
 		return res
 
-	cpdef Read(self, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
+	cpdef Read(self, int num_files, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
 		cdef int N = 0
 		cdef unsigned int i
 		cdef char *fname = <bytes>self.filename.encode()
 		cdef Types.Particule part
 
-		part = g.Gadget_Read(fname, &self.header, bpot, bacc, bdadt, bdt)
+		part = g.Gadget_Read(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
 		if part is NULL:
 			raise MemoryError
 		
