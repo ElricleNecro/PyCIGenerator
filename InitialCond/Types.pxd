@@ -4,9 +4,12 @@ cdef extern from "types.h":
 		float Vit[3]
 		float m
 		float Pot
-		float Acc
+		float Acc[3]
 		float dAdt
 		float ts
+		float Rho
+		float U
+		float Ne
 		int Id
 		int Type
 	ctypedef _particule_data* Particule

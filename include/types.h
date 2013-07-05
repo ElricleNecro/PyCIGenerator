@@ -30,9 +30,12 @@ typedef struct _particule_data {
 	float Vit[3];
 	float m;
 	float Pot;
-	float Acc;
+	float Acc[3];
 	float dAdt;
 	float ts;
+	float Rho;
+	float U;
+	float Ne;
 	int Id;
 	int Type;
 }*Particule;
