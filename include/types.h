@@ -26,9 +26,13 @@ struct _part {
 typedef struct _part Part;
 
 typedef struct _particule_data {
-	double Pos[3];
-	double Vit[3];
-	double m;
+	float Pos[3];
+	float Vit[3];
+	float m;
+	float Pot;
+	float Acc;
+	float dAdt;
+	float ts;
 	int Id;
 	int Type;
 }*Particule;
