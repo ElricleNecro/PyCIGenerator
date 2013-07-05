@@ -20,7 +20,7 @@ void float1d_libere(float *ptf)
 	return ;
 }
 
-Particule Gadget_Read(const char *name, Header *header, bool b_potential, bool b_acceleration, bool b_rate_entropy, bool b_timestep)
+Particule Gadget_Read(const char *fname, Header *header, int files, bool b_potential, bool b_acceleration, bool b_rate_entropy, bool b_timestep)
 {
 	FILE *fd;
 	char buf[200];
@@ -55,13 +55,11 @@ Particule Gadget_Read(const char *name, Header *header, bool b_potential, bool b
 		{
 			for(k = 0, NumPart = 0, ntot_withmasses = 0; k < 6; k++)
 				NumPart += header->npart[k];
-			*Ngas = header->npart[0];
 		}
 		else
 		{
 			for(k = 0, NumPart = 0, ntot_withmasses = 0; k < 6; k++)
 				NumPart += header->npartTotal[k];
-			*Ngas = header->npartTotal[0];
 		}
 
 		for(k = 0, ntot_withmasses = 0; k < 6; k++)
@@ -97,7 +95,7 @@ Particule Gadget_Read(const char *name, Header *header, bool b_potential, bool b
 		{
 			for(n = 0; n < header->npart[k]; n++)
 			{
-				fread(&P[pc_new].Vel[0], sizeof(float), 3, fd);
+				fread(&P[pc_new].Vit[0], sizeof(float), 3, fd);
 				pc_new++;
 			}
 		}
@@ -126,9 +124,9 @@ Particule Gadget_Read(const char *name, Header *header, bool b_potential, bool b
 				P[pc_new].Type = k;
 
 				if(header->mass[k] == 0)
-					fread(&P[pc_new].Mass, sizeof(float), 1, fd);
+					fread(&P[pc_new].m, sizeof(float), 1, fd);
 				else
-					P[pc_new].Mass = header->mass[k];
+					P[pc_new].m = header->mass[k];
 				pc_new++;
 			}
 		}
