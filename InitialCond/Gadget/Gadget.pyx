@@ -80,7 +80,7 @@ The only gadget file format supported is the gadget 1.
 	def __str__(self):
 		return self.__repr__()
 
-	cpdef Write(self):
+	cpdef int Write(self):
 		cdef int res
 		cdef unsigned int i
 		cdef char *fname = <bytes>self.filename.encode()
@@ -90,6 +90,20 @@ The only gadget file format supported is the gadget 1.
 			self.header.npartTotal[i] = self.header.npart[i]
 		res = g.Gadget_Write(fname, self.header, self.part.ptr_data)
 		return res
+
+	cpdef Read(self, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
+		cdef int N = 0
+		cdef unsigned int i
+		cdef char *fname = <bytes>self.filename.encode()
+		cdef Types.Particule part
+
+		part = g.Gadget_Read(fname, &self.header, bpot, bacc, bdadt, bdt)
+		if part is NULL:
+			raise MemoryError
+		
+		for i in range(6):
+			N += self.header.npart[i]
+		self.part = Types.FromPointer(part, N)
 
 	property Part:
 		def __get__(self):

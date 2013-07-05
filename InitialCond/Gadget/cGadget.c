@@ -20,6 +20,208 @@ void float1d_libere(float *ptf)
 	return ;
 }
 
+Particule Gadget_Read(const char *name, Header *header, bool b_potential, bool b_acceleration, bool b_rate_entropy, bool b_timestep)
+{
+	FILE *fd;
+	char buf[200];
+	int i, k, dummy, ntot_withmasses;
+	int n, pc, pc_new, pc_sph;
+	int NumPart = 0;
+	Particule P = NULL;
+
+#define SKIP fread(&dummy, sizeof(dummy), 1, fd);
+
+	for(i = 0, pc = 1; i < files; i++, pc = pc_new)
+	{
+		if(files > 1)
+			sprintf(buf, "%s.%d", fname, i);
+		else
+			sprintf(buf, "%s", fname);
+
+		if(!(fd = fopen(buf, "r")))
+		{
+			printf("can't open file `%s`\n", buf);
+			exit(EXIT_FAILURE);
+		}
+
+		printf("reading `%s' ...\n", buf);
+		fflush(stdout);
+
+		fread(&dummy, sizeof(dummy), 1, fd);
+		fread(header, sizeof(header), 1, fd);
+		fread(&dummy, sizeof(dummy), 1, fd);
+
+		if(files == 1)
+		{
+			for(k = 0, NumPart = 0, ntot_withmasses = 0; k < 6; k++)
+				NumPart += header->npart[k];
+			*Ngas = header->npart[0];
+		}
+		else
+		{
+			for(k = 0, NumPart = 0, ntot_withmasses = 0; k < 6; k++)
+				NumPart += header->npartTotal[k];
+			*Ngas = header->npartTotal[0];
+		}
+
+		for(k = 0, ntot_withmasses = 0; k < 6; k++)
+		{
+			if(header->mass[k] == 0)
+				ntot_withmasses += header->npart[k];
+		}
+
+		if(i == 0)
+		{
+			printf("allocating memory...\n");
+			if( (P = malloc(NumPart * sizeof(struct _particule_data))) == NULL )
+			{
+				perror("Allocate memory failed:");
+				return NULL;
+			}
+			printf("allocating memory...done\n");
+		}
+
+		SKIP;
+		for(k = 0, pc_new = pc; k < 6; k++)
+		{
+			for(n = 0; n < header->npart[k]; n++)
+			{
+				fread(&P[pc_new].Pos[0], sizeof(float), 3, fd);
+				pc_new++;
+			}
+		}
+		SKIP;
+
+		SKIP;
+		for(k = 0, pc_new = pc; k < 6; k++)
+		{
+			for(n = 0; n < header->npart[k]; n++)
+			{
+				fread(&P[pc_new].Vel[0], sizeof(float), 3, fd);
+				pc_new++;
+			}
+		}
+		SKIP;
+
+
+		SKIP;
+		for(k = 0, pc_new = pc; k < 6; k++)
+		{
+			for(n = 0; n < header->npart[k]; n++)
+			{
+				/*fread(&Id[pc_new], sizeof(int), 1, fd);*/
+				fread(&P[pc_new].Id, sizeof(int), 1, fd);
+				pc_new++;
+			}
+		}
+		SKIP;
+
+
+		if(ntot_withmasses > 0)
+			SKIP;
+		for(k = 0, pc_new = pc; k < 6; k++)
+		{
+			for(n = 0; n < header->npart[k]; n++)
+			{
+				P[pc_new].Type = k;
+
+				if(header->mass[k] == 0)
+					fread(&P[pc_new].Mass, sizeof(float), 1, fd);
+				else
+					P[pc_new].Mass = header->mass[k];
+				pc_new++;
+			}
+		}
+		if(ntot_withmasses > 0)
+			SKIP;
+
+
+		if(header->npart[0] > 0)
+		{
+			SKIP;
+			for(n = 0, pc_sph = pc; n < header->npart[0]; n++)
+			{
+				fread(&P[pc_sph].U, sizeof(float), 1, fd);
+				pc_sph++;
+			}
+			SKIP;
+
+			SKIP;
+			for(n = 0, pc_sph = pc; n < header->npart[0]; n++)
+			{
+				fread(&P[pc_sph].Rho, sizeof(float), 1, fd);
+				pc_sph++;
+			}
+			SKIP;
+
+			if(header->flag_cooling)
+			{
+				SKIP;
+				for(n = 0, pc_sph = pc; n < header->npart[0]; n++)
+				{
+					fread(&P[pc_sph].Ne, sizeof(float), 1, fd);
+					pc_sph++;
+				}
+				SKIP;
+			}
+			else
+				for(n = 0, pc_sph = pc; n < header->npart[0]; n++)
+				{
+					P[pc_sph].Ne = 1.0;
+					pc_sph++;
+				}
+		}
+
+		if( b_potential )
+		{
+			SKIP;
+			for(k = 0, pc_new = pc; k < 6; k++)
+			{
+				for(n = 0; n < header->npart[k]; n++)
+					fread(&P[pc_new].Pot, sizeof(float), 1, fd);
+			}
+			SKIP;
+		}
+
+		if( b_acceleration )
+		{
+			SKIP;
+			for(k = 0, pc_new = pc; k < 6; k++)
+			{
+				for(n = 0; n < header->npart[k]; n++)
+					fread(&P[pc_new].Acc[0], sizeof(float), 3, fd);
+			}
+			SKIP;
+		}
+
+		if( b_rate_entropy && header->npart[0] > 0 )
+		{
+			SKIP;
+			for(n = 0, pc_sph = pc; n < header->npart[0]; n++)
+			{
+				fread(&P[pc_sph].dAdt, sizeof(float), 1, fd);
+				pc_sph++;
+			}
+			SKIP;
+		}
+
+		if( b_timestep )
+		{
+			SKIP;
+			for(k = 0, pc_new = pc; k < 6; k++)
+			{
+				for(n = 0; n < header->npart[k]; n++)
+					fread(&P[pc_new].ts, sizeof(float), 1, fd);
+			}
+			SKIP;
+		}
+
+		fclose(fd);
+	}
+
+	return P;
+}
+
 bool Gadget_Write(const char *name, const Header header, const Particule part)
 {
 	FILE *fd = NULL;
