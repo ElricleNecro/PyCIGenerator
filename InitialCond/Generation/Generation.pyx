@@ -132,7 +132,7 @@ cdef class pObject:
 
 		if OldVir == 0.:
 			self.SaveText("/tmp/debug.ci_py.log")
-			raise ValueError("Get Null Viriel!")
+			raise ValueError("Get Null Viriel! Data write in /tmp/debug.ci_py.log.")
 		fact = Vir / OldVir
 
 		for i in range(self.N):
@@ -145,29 +145,6 @@ cdef class pObject:
 		with open(filename, "w") as f:
 			for i in range(self.N):
 				f.writelines("%g %g %g %g %g %g %g %d\n"%(self.part.ptr_data[i].Pos[0], self.part.ptr_data[i].Pos[1], self.part.ptr_data[i].Pos[2], self.part.ptr_data[i].Vit[0], self.part.ptr_data[i].Pos[1], self.part.ptr_data[i].Pos[2], self.part.ptr_data[i].m, self.part.ptr_data[i].Id))
-
-
-cdef class Sphere(pObject):
-	@cython.boundscheck(False)
-	cpdef homo(self, double r_m, long seed, pos=True, int Id_from=0):
-		cdef double **res
-		cdef unsigned int i, j
-
-		res = gb.sphere_homo(r_m, self.N, &seed)
-
-		if pos:
-			for i in range(self.N):
-				for j in range(3):
-					self.part.ptr_data[i].Pos[j] = res[i][j]
-		else:
-			for i in range(self.N):
-				for j in range(3):
-					self.part.ptr_data[i].Vit[j] = res[i][j]
-
-		free(res[0])
-		free(res)
-
-		return seed
 
 	@cython.boundscheck(False)
 	cpdef gauss(self, double sig, long seed, pos=False, int Id_from=0):
@@ -210,6 +187,52 @@ cdef class Sphere(pObject):
 		free(res)
 
 		return seed
+
+
+cdef class Sphere(pObject):
+	@cython.boundscheck(False)
+	cpdef homo(self, double r_m, long seed, pos=True, int Id_from=0):
+		cdef double **res
+		cdef unsigned int i, j
+
+		res = gb.sphere_homo(r_m, self.N, &seed)
+
+		if pos:
+			for i in range(self.N):
+				for j in range(3):
+					self.part.ptr_data[i].Pos[j] = res[i][j]
+		else:
+			for i in range(self.N):
+				for j in range(3):
+					self.part.ptr_data[i].Vit[j] = res[i][j]
+
+		free(res[0])
+		free(res)
+
+		return seed
+
+cdef class Cube(pObject):
+	@cython.boundscheck(False)
+	cpdef homo(self, double r_m, long seed, pos=True, int Id_from=0):
+		cdef double **res
+		cdef unsigned int i, j
+
+		res = gb.carree_homo(r_m, self.N, &seed)
+
+		if pos:
+			for i in range(self.N):
+				for j in range(3):
+					self.part.ptr_data[i].Pos[j] = res[i][j]
+		else:
+			for i in range(self.N):
+				for j in range(3):
+					self.part.ptr_data[i].Vit[j] = res[i][j]
+
+		free(res[0])
+		free(res)
+
+		return seed
+
 
 #, pos=False, Type=0, Id=True, m=0.
 
