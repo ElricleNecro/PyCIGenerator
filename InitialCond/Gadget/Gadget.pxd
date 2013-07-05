@@ -38,10 +38,13 @@ cdef extern from "gadget.h":
 				#const double MConv,
 				#const double Soft)
 	
+	Types.Particule Gadget_Read(const char *name, Header *header, int files, int b_potential, int b_acceleration, int b_rate_entropy, int b_timestep)
 	int Gadget_Write(const char *name, const Header header, const Types.Particule part)
 
 cdef class Gadget:
 	cdef Types.Particules part
 	cdef Header header
 	cdef filename
-	cpdef Write(self)
+	cpdef int Write(self)
+	cpdef Read(self, int num_files, bint bpot=?, bint bacc=?, bint bdadt=?, bint bdt=?)
+
