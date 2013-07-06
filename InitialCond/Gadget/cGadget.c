@@ -40,6 +40,7 @@ Particule Gadget_Read(const char *fname, Header *header, int files, bool b_poten
 
 		if(!(fd = fopen(buf, "r")))
 		{
+			perror("Can't open file:");
 			printf("can't open file `%s`\n", buf);
 			exit(EXIT_FAILURE);
 		}
@@ -219,6 +220,7 @@ Particule Gadget_Read(const char *fname, Header *header, int files, bool b_poten
 
 	return P;
 }
+#undef SKIP
 
 bool Gadget_Write(const char *name, const Header header, const Particule part)
 {
