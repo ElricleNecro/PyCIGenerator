@@ -31,7 +31,7 @@ Particule Gadget_Read(const char *fname, Header *header, int files, bool b_poten
 
 #define SKIP fread(&dummy, sizeof(dummy), 1, fd);
 
-	for(i = 0, pc = 1; i < files; i++, pc = pc_new)
+	for(i = 0, pc = 0; i < files; i++, pc = pc_new)
 	{
 		if(files > 1)
 			sprintf(buf, "%s.%d", fname, i);
