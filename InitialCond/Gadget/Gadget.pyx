@@ -1,3 +1,4 @@
+cimport cython
 cimport Gadget as g
 
 import  InitialCond.Types as Types
@@ -9,6 +10,7 @@ cdef class Gadget:
 	#cdef Types.Particules part
 	#cdef g.Header header
 
+	@cython.boundscheck(False)
 	def __cinit__(self, filename):
 		cdef unsigned int i
 		self.filename = filename
@@ -80,6 +82,8 @@ The only gadget file format supported is the gadget 1.
 	def __str__(self):
 		return self.__repr__()
 
+	@cython.wraparound(False)
+	@cython.boundscheck(False)
 	cpdef int Write(self):
 		cdef int res
 		cdef unsigned int i
@@ -91,6 +95,8 @@ The only gadget file format supported is the gadget 1.
 		res = g.Gadget_Write(fname, self.header, self.part.ptr_data)
 		return res
 
+	@cython.wraparound(False)
+	@cython.boundscheck(False)
 	cpdef Read(self, int num_files, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
 		cdef int N = 0
 		cdef unsigned int i
@@ -103,6 +109,7 @@ The only gadget file format supported is the gadget 1.
 		
 		for i in range(6):
 			N += self.header.npart[i]
+
 		self.part = Types.FromPointer(part, N)
 
 	property Part:
@@ -118,11 +125,13 @@ The only gadget file format supported is the gadget 1.
 				raise TypeError("You must passed a InitialCond.Types.Particules!")
 
 	property npartTotalHighWord:
+		@cython.boundscheck(False)
 		def __get__(self):
 			res = [0]*6
 			for i in range(6):
 				res[i] = self.header.npartTotalHighWord[i]
 			return res
+		@cython.boundscheck(False)
 		def __set__(self, value):
 			if len(value) != 6:
 				raise ValueError("You should past a list of 6 integers!")
@@ -130,11 +139,13 @@ The only gadget file format supported is the gadget 1.
 				self.header.npartTotalHighWord[i] = value[i]
 
 	property npart:
+		@cython.boundscheck(False)
 		def __get__(self):
 			res = [0]*6
 			for i in range(6):
 				res[i] = self.header.npart[i]
 			return res
+		@cython.boundscheck(False)
 		def __set__(self, value):
 			if len(value) != 6:
 				raise ValueError("You should past a list of 6 integers!")
@@ -142,11 +153,13 @@ The only gadget file format supported is the gadget 1.
 				self.header.npart[i] = value[i]
 
 	property mass:
+		@cython.boundscheck(False)
 		def __get__(self):
 			res = [0]*6
 			for i in range(6):
 				res[i] = self.header.mass[i]
 			return res
+		@cython.boundscheck(False)
 		def __set__(self, value):
 			if len(value) != 6:
 				raise ValueError("You should past a list of 6 floats!")
