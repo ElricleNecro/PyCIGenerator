@@ -56,7 +56,9 @@ def makeExtension(extName, test=False, **kwargs):
 		extra_compile_args = ["-std=c99"],
 		extra_link_args = ['-g'],
 		libraries = [],
-		cython_include_dirs = [os.path.join(os.getenv("HOME"), '.local/lib/python' + ".".join([ str(a) for a in sys.version_info[:2]]) + '/site-packages/Cython/Includes')]
+		cython_include_dirs = [
+			os.path.join(os.getenv("HOME"), '.local/lib/python' + ".".join([ str(a) for a in sys.version_info[:2]]) + '/site-packages/Cython/Includes')
+		]
 	)
 
 	for key in kwargs.keys():
@@ -86,9 +88,22 @@ for name in extNames:
 			opt["include_dirs"] += [ "include/" ]
 		else:
 			opt["include_dirs"]  = [ "include/" ]
+		opt["cython_directives"] = {
+					"embedsignature" : True,
+					"language_level" : 3
+				}
 		extensions.append( makeExtension(name, **opt) )
 	else:
-		extensions.append( makeExtension(name, include_dirs = [ "include/" ]) )
+		extensions.append(
+				makeExtension(
+					name,
+					include_dirs = [ "include/" ],
+					cython_directives = {
+						"embedsignature" : True,
+						"language_level" : 3
+					}
+				)
+			)
 
 #--------------------------------------------------------------------------------------------------------------
 # Packages names:
