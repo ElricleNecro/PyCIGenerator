@@ -49,7 +49,7 @@ Particule Gadget_Read(const char *fname, Header *header, int files, bool b_poten
 		fflush(stdout);
 
 		fread(&dummy, sizeof(dummy), 1, fd);
-		fread(header, sizeof(header), 1, fd);
+		fread(header, sizeof(Header), 1, fd);
 		fread(&dummy, sizeof(dummy), 1, fd);
 
 		if(files == 1)
@@ -71,7 +71,7 @@ Particule Gadget_Read(const char *fname, Header *header, int files, bool b_poten
 
 		if(i == 0)
 		{
-			printf("allocating memory...\n");
+			printf("allocating memory for %d particules...\n", NumPart);
 			if( (P = malloc(NumPart * sizeof(struct _particule_data))) == NULL )
 			{
 				perror("Allocate memory failed:");
@@ -210,7 +210,9 @@ Particule Gadget_Read(const char *fname, Header *header, int files, bool b_poten
 			for(k = 0, pc_new = pc; k < 6; k++)
 			{
 				for(n = 0; n < header->npart[k]; n++)
+				{
 					fread(&P[pc_new].ts, sizeof(float), 1, fd);
+				}
 			}
 			SKIP;
 		}
