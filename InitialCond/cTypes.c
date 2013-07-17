@@ -60,6 +60,18 @@ int qsort_partaxe(const void *a, const void *b)
 		return 0;
 }
 
+int by_id(const void *a, const void *b)
+{
+	const struct _particule_data *p1 = (const struct _particule_data*)a,
+				     *p2 = (const struct _particule_data*)b;
+	return p1->Id - p2->Id;
+}
+
+void sort_by_id(Particule tab, const int N)
+{
+	qsort(tab, N, sizeof(struct _particule_data), by_id);
+}
+
 Particule Concat(const Particule a, const int Na, const Particule b, const int Nb)
 {
 	Particule new = malloc( sizeof(struct _particule_data) * (Na + Nb) );
