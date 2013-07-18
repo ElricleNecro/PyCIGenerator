@@ -1,234 +1,5 @@
 #include "generation.h"
 
-//void Homo_Generate(const double rmax, const double vmax, const double m, const double WVir, const int NbPart, Particule res, long *seed)
-//{
-	//printf("Viriel Voulu : \033[31m%g\033[00m\n", WVir);
-	//double **tmp = NULL;
-	//Particule tmp2 = NULL;
-	//tmp2 = (Particule) malloc(NbPart * sizeof(struct _particule_data));
-
-	//tmp = sphere_homo(2.0*rmax, NbPart, seed);
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//tmp2[i].Pos[0] = tmp[i][0];
-		//tmp2[i].Pos[1] = tmp[i][1];
-		//tmp2[i].Pos[2] = tmp[i][2];
-		//tmp2[i].m = m;
-		//tmp2[i].Id = i;
-	//}
-	//double2d_libere(tmp), tmp=NULL;
-
-	//tmp = sphere_homo(2.0*vmax, NbPart, seed);
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//tmp2[i].Vit[0] = tmp[i][0];
-		//tmp2[i].Vit[1] = tmp[i][1];
-		//tmp2[i].Vit[2] = tmp[i][2];
-	//}
-	//double2d_libere(tmp), tmp=NULL;
-
-	//TNoeud root = Create_Tree(tmp2, NbPart, 15, (struct _particule_data){ .Pos[0] = 0.0, .Pos[1]= 0.0, .Pos[2]=0.0}, 100.0 * rmax);
-
-	//double v = 0.0, pot = 0.0;
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//pot += m*Tree_CalcPot(root, &tmp2[i], 0.5, 0.0);
-		//v   += 0.5 * m * ( tmp2[i].Vit[0]*tmp2[i].Vit[0] + tmp2[i].Vit[1]*tmp2[i].Vit[1] + tmp2[i].Vit[2]*tmp2[i].Vit[2] );
-	//}
-	//pot /= 2.0;
-	//double vir = 2*v/pot;
-	//double fact = WVir/vir;
-
-	//printf("Viriel de l'objet central : \033[36m%g\033[00m (%g, %g)\n", vir, pot, v);
-	//printf("facteur : \033[31m%g\033[00m\n", fact);
-
-	//printf("%g %g %g\n", tmp2[NbPart-1].Vit[0], tmp2[NbPart-1].Vit[1], tmp2[NbPart-1].Vit[2]);
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//tmp2[i].Vit[0] *= sqrt(fact);
-		//tmp2[i].Vit[1] *= sqrt(fact);
-		//tmp2[i].Vit[2] *= sqrt(fact);
-	//}
-	//printf("%g %g %g\n", tmp2[NbPart-1].Vit[0], tmp2[NbPart-1].Vit[1], tmp2[NbPart-1].Vit[2]);
-
-	//v = 0.0, pot = 0.0;
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//pot += m*Tree_CalcPot(root, &tmp2[i], 0.5, 0.0);
-		//v   += 0.5*m*(tmp2[i].Vit[0]*tmp2[i].Vit[0] + tmp2[i].Vit[1]*tmp2[i].Vit[1] + tmp2[i].Vit[2]*tmp2[i].Vit[2]);
-	//}
-	//pot/=2.0;
-	//printf("After, New Viriel : \033[36m%g\033[00m (%g, %g)\n", 2.0*v/pot, pot, v);
-	//Tree_Free(root);
-
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//res[i].Pos[0] = tmp2[i].Pos[0];
-		//res[i].Pos[1] = tmp2[i].Pos[1];
-		//res[i].Pos[2] = tmp2[i].Pos[2];
-
-		//res[i].Vit[0] = tmp2[i].Vit[0]; // * sqrt(fact);
-		//res[i].Vit[1] = tmp2[i].Vit[1]; // * sqrt(fact);
-		//res[i].Vit[2] = tmp2[i].Vit[2]; // * sqrt(fact);
-
-		//res[i].m      = m;
-	//}
-	//free(tmp2);
-//}
-
-//void HomoGauss_Generate(const double rmax, const double sig, const double m, const double WVir, const int NbPart, Particule res, long *seed)
-//{
-	//printf("Viriel Voulu : \033[31m%g\033[00m\n", WVir);
-	//double **tmp = NULL;
-	//Particule tmp2 = NULL;
-	//tmp2 = (Particule) malloc(NbPart * sizeof(struct _particule_data));
-
-	//tmp = sphere_homo(2.0*rmax, NbPart, seed);
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//tmp2[i].Pos[0] = tmp[i][0];
-		//tmp2[i].Pos[1] = tmp[i][1];
-		//tmp2[i].Pos[2] = tmp[i][2];
-		//tmp2[i].m = m;
-		//tmp2[i].Id = i;
-	//}
-	//double2d_libere(tmp), tmp=NULL;
-
-	//tmp = gauss(sig, NbPart, seed);
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//tmp2[i].Vit[0] = tmp[i][0];
-		//tmp2[i].Vit[1] = tmp[i][1];
-		//tmp2[i].Vit[2] = tmp[i][2];
-	//}
-	//double2d_libere(tmp), tmp=NULL;
-
-	//TNoeud root = Create_Tree(tmp2, NbPart, 15, (struct _particule_data){ .Pos[0] = 0.0, .Pos[1]= 0.0, .Pos[2]=0.0}, 100.0 * rmax);
-
-	//double v = 0.0, pot = 0.0;
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//pot += m*Tree_CalcPot(root, &tmp2[i], 0.5, 0.0);
-		//v   += 0.5 * m * ( tmp2[i].Vit[0]*tmp2[i].Vit[0] + tmp2[i].Vit[1]*tmp2[i].Vit[1] + tmp2[i].Vit[2]*tmp2[i].Vit[2] );
-	//}
-	//pot /= 2.0;
-	//double vir = 2*v/pot;
-	//double fact = WVir/vir;
-
-	//printf("Viriel de l'objet central : \033[36m%g\033[00m (%g, %g)\n", vir, pot, v);
-	//printf("facteur : \033[31m%g\033[00m\n", fact);
-
-	////printf("%g %g %g\n", tmp2[NbPart-1].Vit[0], tmp2[NbPart-1].Vit[1], tmp2[NbPart-1].Vit[2]);
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//tmp2[i].Vit[0] *= sqrt(fact);
-		//tmp2[i].Vit[1] *= sqrt(fact);
-		//tmp2[i].Vit[2] *= sqrt(fact);
-	//}
-	////printf("%g %g %g\n", tmp2[NbPart-1].Vit[0], tmp2[NbPart-1].Vit[1], tmp2[NbPart-1].Vit[2]);
-
-	//v = 0.0, pot = 0.0;
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//pot += m*Tree_CalcPot(root, &tmp2[i], 0.5, 0.0);
-		//v   += 0.5*m*(tmp2[i].Vit[0]*tmp2[i].Vit[0] + tmp2[i].Vit[1]*tmp2[i].Vit[1] + tmp2[i].Vit[2]*tmp2[i].Vit[2]);
-	//}
-	//pot/=2.0;
-	//printf("After, New Viriel : \033[36m%g\033[00m (%g, %g)\n", 2.0*v/pot, pot, v);
-	//Tree_Free(root);
-
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//res[i].Pos[0] = tmp2[i].Pos[0];
-		//res[i].Pos[1] = tmp2[i].Pos[1];
-		//res[i].Pos[2] = tmp2[i].Pos[2];
-
-		//res[i].Vit[0] = tmp2[i].Vit[0]; // * sqrt(fact);
-		//res[i].Vit[1] = tmp2[i].Vit[1]; // * sqrt(fact);
-		//res[i].Vit[2] = tmp2[i].Vit[2]; // * sqrt(fact);
-
-		//res[i].m      = m;
-	//}
-
-	//free(tmp2);
-//}
-
-//void HomoGaussLimited_Generate(const double rmax, const double sig, const double broke, const double m, const double WVir, const int NbPart, Particule res, long *seed)
-//{
-	//printf("Viriel Voulu : \033[31m%g\033[00m\n", WVir);
-	//double **tmp = NULL;
-	//Particule tmp2 = NULL;
-	//tmp2 = (Particule) malloc(NbPart * sizeof(struct _particule_data));
-
-	//tmp = sphere_homo(2.0*rmax, NbPart, seed);
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//tmp2[i].Pos[0] = tmp[i][0];
-		//tmp2[i].Pos[1] = tmp[i][1];
-		//tmp2[i].Pos[2] = tmp[i][2];
-		//tmp2[i].m = m;
-		//tmp2[i].Id = i;
-	//}
-	//double2d_libere(tmp), tmp=NULL;
-
-	//tmp = gauss_limit(sig, broke, NbPart, seed);
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//tmp2[i].Vit[0] = tmp[i][0];
-		//tmp2[i].Vit[1] = tmp[i][1];
-		//tmp2[i].Vit[2] = tmp[i][2];
-	//}
-	//double2d_libere(tmp), tmp=NULL;
-
-	//TNoeud root = Create_Tree(tmp2, NbPart, 15, (struct _particule_data){ .Pos[0] = 0.0, .Pos[1]= 0.0, .Pos[2]=0.0}, 100.0 * rmax);
-
-	//double v = 0.0, pot = 0.0;
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//pot += m*Tree_CalcPot(root, &tmp2[i], 0.5, 0.0);
-		//v   += 0.5 * m * ( tmp2[i].Vit[0]*tmp2[i].Vit[0] + tmp2[i].Vit[1]*tmp2[i].Vit[1] + tmp2[i].Vit[2]*tmp2[i].Vit[2] );
-	//}
-	//pot /= 2.0;
-	//double vir = 2*v/pot;
-	//double fact = WVir/vir;
-
-	//printf("Viriel de l'objet central : \033[36m%g\033[00m (%g, %g)\n", vir, pot, v);
-	//printf("facteur : \033[31m%g\033[00m\n", fact);
-
-	//printf("%g %g %g\n", tmp2[NbPart-1].Vit[0], tmp2[NbPart-1].Vit[1], tmp2[NbPart-1].Vit[2]);
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//tmp2[i].Vit[0] *= sqrt(fact);
-		//tmp2[i].Vit[1] *= sqrt(fact);
-		//tmp2[i].Vit[2] *= sqrt(fact);
-	//}
-	//printf("%g %g %g\n", tmp2[NbPart-1].Vit[0], tmp2[NbPart-1].Vit[1], tmp2[NbPart-1].Vit[2]);
-
-	//v = 0.0, pot = 0.0;
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//pot += m*Tree_CalcPot(root, &tmp2[i], 0.5, 0.0);
-		//v   += 0.5*m*(tmp2[i].Vit[0]*tmp2[i].Vit[0] + tmp2[i].Vit[1]*tmp2[i].Vit[1] + tmp2[i].Vit[2]*tmp2[i].Vit[2]);
-	//}
-	//pot/=2.0;
-	//printf("After, New Viriel : \033[36m%g\033[00m (%g, %g)\n", 2.0*v/pot, pot, v);
-	//Tree_Free(root);
-
-	//for(int i = 0; i < NbPart; i++)
-	//{
-		//res[i].Pos[0] = tmp2[i].Pos[0];
-		//res[i].Pos[1] = tmp2[i].Pos[1];
-		//res[i].Pos[2] = tmp2[i].Pos[2];
-
-		//res[i].Vit[0] = tmp2[i].Vit[0]; // * sqrt(fact);
-		//res[i].Vit[1] = tmp2[i].Vit[1]; // * sqrt(fact);
-		//res[i].Vit[2] = tmp2[i].Vit[2]; // * sqrt(fact);
-
-		//res[i].m      = m;
-	//}
-	//free(tmp2);
-//}
-
 double** carree_homo(const double rmax, const int NbPart, long *seed)
 {
 	if( NbPart == 0 )
@@ -490,47 +261,17 @@ void King_Generate(const King Amas, const int Nb_part_t1, double *r_grand, Parti
 
 	*r_grand = 0.0;
 
-#ifdef SEED_WRITING
-	FILE *seed_file = NULL;
-	long total = 0;
-	seed_file = fopen("seed.dat", "w");
-	/*if( seed_file != NULL && total % SEED_FREQ == 0  )*/ fprintf(seed_file, "%ld\n", *seed);
-#endif
 	fprintf(stderr, "\r\033[01m%03.3f%%\033[00m", ( (double)i ) / ( (double) Nb_part_t1 ) * 100.0 );
 	while( i < Nb_part_t1 )
 	{
 		Coord tmp;
 
 		tmp.x    = -Amas.amas.rmax + 2.0*Amas.amas.rmax*ran2(seed);
-//#ifdef SEED_WRITING
-		//total++;
-		//if( seed_file != NULL && total % SEED_FREQ == 0  ) fprintf(seed_file, "%ld\n", *seed);
-//#endif
 		tmp.y    = -Amas.amas.rmax + 2.0*Amas.amas.rmax*ran2(seed);
-//#ifdef SEED_WRITING
-		//total++;
-		//if( seed_file != NULL && total % SEED_FREQ == 0  ) fprintf(seed_file, "%ld\n", *seed);
-//#endif
 		tmp.z    = -Amas.amas.rmax + 2.0*Amas.amas.rmax*ran2(seed);
-//#ifdef SEED_WRITING
-		//total++;
-		//if( seed_file != NULL && total % SEED_FREQ == 0  ) fprintf(seed_file, "%ld\n", *seed);
-//#endif
 		tmp.vx   = -Amas.amas.vmax + 2.0*Amas.amas.vmax*ran2(seed);
-//#ifdef SEED_WRITING
-		//total++;
-		//if( seed_file != NULL && total % SEED_FREQ == 0  ) fprintf(seed_file, "%ld\n", *seed);
-//#endif
 		tmp.vy   = -Amas.amas.vmax + 2.0*Amas.amas.vmax*ran2(seed);
-//#ifdef SEED_WRITING
-		//total++;
-		//if( seed_file != NULL && total % SEED_FREQ == 0  ) fprintf(seed_file, "%ld\n", *seed);
-//#endif
 		tmp.vz   = -Amas.amas.vmax + 2.0*Amas.amas.vmax*ran2(seed);
-//#ifdef SEED_WRITING
-		//total++;
-		//if( seed_file != NULL && total % SEED_FREQ == 0  ) fprintf(seed_file, "%ld\n", *seed);
-//#endif
 
 		double v = sqrt(tmp.vx*tmp.vx + tmp.vy*tmp.vy + tmp.vz*tmp.vz),
 		       r = sqrt(tmp.x*tmp.x + tmp.y*tmp.y + tmp.z*tmp.z);
@@ -557,30 +298,12 @@ void King_Generate(const King Amas, const int Nb_part_t1, double *r_grand, Parti
 
 			i++;
 			fprintf(stderr, "\r\033[01m%03.3f%%\033[00m", ( (double)i ) / ( (double) Nb_part_t1 ) * 100.0 );
-#ifdef SEED_WRITING
-			total++;
-			if( total == NB_BY )
-			{
-				fprintf(seed_file, "%ld\n", *seed);
-				total = 0;
-			}
-			//if( i % NB_BY == 0 ) fprintf(seed_file, "%ld\n", *seed);
-#endif
 		}
 		else
 			rejet++;
 
-//#ifdef SEED_WRITING
-		//total++;
-		//if( seed_file != NULL && total % SEED_FREQ == 0  ) fprintf(seed_file, "%ld\n", *seed);
-//#endif
 	}
 	fputs("\n", stderr);
-
-#ifdef SEED_WRITING
-	if( seed_file != NULL ) fclose(seed_file);
-	//printf("\033[31mNb total de tirage : %ld\033[00m\n", total);
-#endif
 
 	x  /= Nb_part_t1;
 	y  /= Nb_part_t1;
