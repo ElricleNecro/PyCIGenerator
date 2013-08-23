@@ -1,4 +1,4 @@
-cdef extern from "types.h":
+cdef extern from "IOGadget/types.h":
 	cdef struct _particule_data:
 		float Pos[3]
 		float Vit[3]
@@ -13,6 +13,8 @@ cdef extern from "types.h":
 		int Id
 		int Type
 	ctypedef _particule_data* Particule
+
+cdef extern from "types.h":
 	void Echange(Particule a, Particule b)
 	Particule Concat(const Particule a, const int Na, const Particule b, const int Nb)
 	void sort_by_id(Particule tab, const int N)
