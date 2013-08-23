@@ -71,7 +71,8 @@ cdef class pObject:
 	cdef readonly double m
 
 	@cython.boundscheck(False)
-	def __cinit__(self, int N, double m=1.0, int id=0, int Type=1):
+	#def __cinit__(self, int N, double m=1.0, int id=0, int Type=1):
+	def __init__(self, int N, double m=1.0, int id=0, int Type=1):
 		"""Constructeur :
 			N -> Nombre de particule,
 			m = 1.0 -> masse d'une particule,
