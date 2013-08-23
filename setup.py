@@ -93,6 +93,18 @@ for name in extNames:
 					"language_level" : 3
 				}
 		extensions.append( makeExtension(name, **opt) )
+	elif "Gadget" in name:
+		opt = pkgconfig("iogadget")
+		opt["cython_include_dirs"] = [ King.get_include() ]
+		if "include_dirs" in opt:
+			opt["include_dirs"] += [ "include/" ]
+		else:
+			opt["include_dirs"]  = [ "include/" ]
+		opt["cython_directives"] = {
+					"embedsignature" : True,
+					"language_level" : 3
+				}
+		extensions.append( makeExtension(name, **opt) )
 	else:
 		extensions.append(
 				makeExtension(
