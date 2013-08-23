@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <IOGadget/gadget.h>
+
 /**
  * \struct Part
  * Contient toutes les informations relatives à une particule.
@@ -24,21 +26,6 @@ struct _part {
 	double m;			/*< Masse de la particule.*/
 };
 typedef struct _part Part;
-
-typedef struct _particule_data {
-	float Pos[3];
-	float Vit[3];
-	float m;
-	float Pot;
-	float Acc[3];
-	float dAdt;
-	float ts;
-	float Rho;
-	float U;
-	float Ne;
-	int Id;
-	int Type;
-}*Particule;
 
 /**
  * Fonction s'occupant d'allouer un tableau de type Part.
@@ -93,5 +80,7 @@ void   Echange(Particule a, Particule b);
  * @return NULL si l'allocation échoue, le nouveau pointeur sinon.
  */
 Particule Concat(const Particule a, const int Na, const Particule b, const int Nb);
+
+void sort_by_id(Particule tab, const int N);
 
 #endif /* end of include guard: TYPES_H */
