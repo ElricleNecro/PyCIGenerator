@@ -1,6 +1,6 @@
 cimport InitialCond.Types as Types
 
-cdef extern from "gadget.h":
+cdef extern from "IOGadget/gadget.h":
 	cdef struct io_header:
 		int		npart[6]
 		double		mass[6]
@@ -22,22 +22,15 @@ cdef extern from "gadget.h":
 		char		fill[60]
 	ctypedef io_header Header
 
-	#bool  write_gadget_file( const char *fname,
-				 #const Particule part1, const double mass_t1, const int Nb_part_t1, const int index_t1,
-				 #const Particule part2, const double mass_t2, const int Nb_part_t2, const int index_t2,
-				 #const double BoxSize,
-				 #const double LongFact,
-				 #const double VitFact)
+cdef extern from "IOGadget/gadget_read.h":
+	Types.Particule Gadget_Read_format1(const char *fname, Header *header, int files, int b_potential, int b_acceleration, int b_rate_entropy, int b_timestep)
+	Types.Particule Gadget_Read_format2(const char *fname, Header *header, int files, int b_potential, int b_acceleration, int b_rate_entropy, int b_timestep)
 
-	#bool write_gadget_conf( const char *filename, const char *ci_file,
-				#const double Tmax,
-				#const int    periodic,
-				#const double BS,
-				#const double LongConv,
-				#const double VitConv,
-				#const double MConv,
-				#const double Soft)
-	
+cdef extern from "IOGadget/gadget_write.h":
+	int Gadget_Write_format1(const char *name, const Header header, const Types.Particule part)
+	int Gadget_Write_format2(const char *name, const Header header, const Types.Particule part)
+
+cdef extern from "gadget.h":
 	Types.Particule Gadget_Read(const char *name, Header *header, int files, int b_potential, int b_acceleration, int b_rate_entropy, int b_timestep)
 	int Gadget_Write(const char *name, const Header header, const Types.Particule part)
 
@@ -45,6 +38,12 @@ cdef class Gadget:
 	cdef Types.Particules part
 	cdef Header header
 	cdef filename
-	cpdef int Write(self)
-	cpdef Read(self, int num_files, bint bpot=?, bint bacc=?, bint bdadt=?, bint bdt=?)
+	cdef Write
+	cdef Read
+	cpdef int OldWrite(self)
+	cpdef OldRead(self, int num_files, bint bpot=?, bint bacc=?, bint bdadt=?, bint bdt=?)
+	cpdef int _write_format1(self)
+	cpdef int _write_format2(self)
+	cpdef _read_format1(self, int num_files, bint bpot=?, bint bacc=?, bint bdadt=?, bint bdt=?)
+	cpdef _read_format2(self, int num_files, bint bpot=?, bint bacc=?, bint bdadt=?, bint bdt=?)
 

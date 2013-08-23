@@ -11,9 +11,16 @@ cdef class Gadget:
 	#cdef g.Header header
 
 	@cython.boundscheck(False)
-	def __cinit__(self, filename):
+	def __init__(self, filename, format=2):
 		cdef unsigned int i
 		self.filename = filename
+
+		if format == 1:
+			self.Write = self._write_format1
+			self.Read  = self._read_format1
+		elif format == 2:
+			self.Write = self._write_format2
+			self.Read  = self._read_format2
 		
 		for i in range(6):
 			self.header.npart[i]              = 0
@@ -84,7 +91,7 @@ The only gadget file format supported is the gadget 1.
 
 	@cython.wraparound(False)
 	@cython.boundscheck(False)
-	cpdef int Write(self):
+	cpdef int OldWrite(self):
 		cdef int res
 		cdef unsigned int i
 		cdef char *fname = <bytes>self.filename.encode()
@@ -97,13 +104,65 @@ The only gadget file format supported is the gadget 1.
 
 	@cython.wraparound(False)
 	@cython.boundscheck(False)
-	cpdef Read(self, int num_files, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
+	cpdef OldRead(self, int num_files, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
 		cdef int N = 0
 		cdef unsigned int i
 		cdef char *fname = <bytes>self.filename.encode()
 		cdef Types.Particule part
 
 		part = g.Gadget_Read(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
+		if part is NULL:
+			raise MemoryError
+		
+		for i in range(6):
+			N += self.header.npart[i]
+
+		self.part = Types.FromPointer(part, N)
+
+	cpdef int _write_format1(self):
+		cdef int res
+		cdef unsigned int i
+		cdef char *fname = <bytes>self.filename.encode()
+		if self.part.ptr_data == NULL:
+			raise MemoryError("Particules array not allocate.")
+		for i in range(6):
+			self.header.npartTotal[i] = self.header.npart[i]
+		res = g.Gadget_Write_format1(fname, self.header, self.part.ptr_data)
+		return res
+
+	cpdef int _write_format2(self):
+		cdef int res
+		cdef unsigned int i
+		cdef char *fname = <bytes>self.filename.encode()
+		if self.part.ptr_data == NULL:
+			raise MemoryError("Particules array not allocate.")
+		for i in range(6):
+			self.header.npartTotal[i] = self.header.npart[i]
+		res = g.Gadget_Write_format2(fname, self.header, self.part.ptr_data)
+		return res
+
+	cpdef _read_format1(self, int num_files, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
+		cdef int N = 0
+		cdef unsigned int i
+		cdef char *fname = <bytes>self.filename.encode()
+		cdef Types.Particule part
+
+		part = g.Gadget_Read_format1(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
+		if part is NULL:
+			raise MemoryError
+		
+		for i in range(6):
+			N += self.header.npart[i]
+
+		self.part = Types.FromPointer(part, N)
+
+	cpdef _read_format2(self, int num_files, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
+		cdef int N = 0
+		cdef unsigned int i
+		cdef char *fname = <bytes>self.filename.encode()
+		cdef Types.Particule part
+
+		part = g.Gadget_Read_format2(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
 		if part is NULL:
 			raise MemoryError
 		
