@@ -76,7 +76,6 @@ double** sphere_homo(const double rmax, const int NbPart, long *seed)
 	double xx   = 0.0,
 	       yy   = 0.0,
 	       zz   = 0.0,
-	       rr   = 0.0,
 	       xm   = 0.0,
 	       ym   = 0.0,
 	       zm   = 0.0;
@@ -324,3 +323,71 @@ void King_Generate(const King Amas, const int Nb_part_t1, double *r_grand, Parti
 		i, rejet, (float)(rejet)/(float)(rejet + i)*100.0, (float)(i)/(float)(rejet + i)*100.0, *r_grand, Amas.amas.rmax, 2.0 * (*r_grand  / 3.086e16) / pow(Nb_part_t1, 1.0/3.0) * 0.05, 2.0 * (*r_grand  / 3.086e16) / pow(Nb_part_t1, 1.0/3.0) * 0.05);
 }
 
+static inline double Fuji_distrib(const double r, const double u, const double j, const double sig_v, const double rho_0)
+{
+	return rho_0 * pow( 2.*M_PI*sig_v*sig_v, -3.0/2.0) * exp(- (u*u + j*j/(r*r)) / (2.*sig_v*sig_v) );
+}
+
+void Fuji_Generate(const int Nb_part_t1, const double r_max, const double v_max, const double sig_v, const double rho_0, Particule king, double *r_grand, long *seed)
+{
+	unsigned int i = 0,
+		     k = 0;
+	unsigned int rejet = 0;
+	//double normal = Fuji_distrib(0.1, 0., 0., sig_v, rho_0);
+	double normal = 4./3. * M_PI * r_max * r_max * r_max; //Fuji_distrib(0.1, 0., 0., sig_v, rho_0);
+	double v, r, j, u;
+	double x = 0.,
+	       y = 0.,
+	       z = 0.,
+	       vx = 0.,
+	       vy = 0.,
+	       vz = 0.;
+
+	while( i < Nb_part_t1 )
+	{
+		for(k=0; k<3; k++)
+			king[i].Pos[k] = ran2(seed) * r_max;
+		for(k=0; k<3; k++)
+			king[i].Vit[k] = ran2(seed) * v_max;
+
+		v = sqrt(king[i].Vit[0]*king[i].Vit[0] + king[i].Vit[1]*king[i].Vit[1] + king[i].Vit[2]*king[i].Vit[2]);
+		r = sqrt(king[i].Pos[0]*king[i].Pos[0] + king[i].Pos[1]*king[i].Pos[1] + king[i].Pos[2]*king[i].Pos[2]);
+		j = sqrt(	  (king[i].Vit[1] * king[i].Pos[2] - king[i].Pos[1] * king[i].Vit[2])*(king[i].Vit[1] * king[i].Pos[2] - king[i].Pos[1] * king[i].Vit[2])
+				+ (king[i].Pos[0] * king[i].Vit[2] - king[i].Pos[2]*king[i].Vit[0])*(king[i].Pos[0] * king[i].Vit[2] - king[i].Pos[2]*king[i].Vit[0])
+				+ (king[i].Pos[1] * king[i].Vit[0] - king[i].Pos[0] * king[i].Vit[1])*(king[i].Pos[1] * king[i].Vit[0] - king[i].Pos[0] * king[i].Vit[1])
+			);
+		u = ( king[i].Pos[0]*king[i].Vit[0] + king[i].Pos[1]*king[i].Vit[1] + king[i].Pos[2]*king[i].Vit[2] ) / r;
+
+		if( r <= r_max && v <= v_max && ran2(seed) <= Fuji_distrib(r, u, j, sig_v, rho_0)/normal )
+		{
+			if( *r_grand < r )
+				*r_grand = r;
+
+			x		+= king[i].Pos[0];
+			y		+= king[i].Pos[1];
+			z		+= king[i].Pos[2];
+			vx		+= king[i].Vit[0];
+			vy		+= king[i].Vit[1];
+			vz		+= king[i].Vit[2];
+
+			i++;
+		}
+		else
+			rejet++;
+
+	}
+
+	x  /= Nb_part_t1;
+	y  /= Nb_part_t1;
+	z  /= Nb_part_t1;
+	vx /= Nb_part_t1;
+	vy /= Nb_part_t1;
+	vz /= Nb_part_t1;
+
+	for(int j = 0; j < Nb_part_t1; j++)
+	{
+		king[j].Pos[0] -= x;
+		king[j].Pos[1] -= y;
+		king[j].Pos[2] -= z;
+	}
+}

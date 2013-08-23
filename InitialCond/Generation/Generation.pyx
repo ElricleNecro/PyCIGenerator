@@ -12,6 +12,9 @@ cimport Generation as gb
 import  King
 cimport King
 
+import numpy as np
+cimport numpy as np
+
 import  InitialCond.Types as Types
 cimport InitialCond.Types as Types
 
@@ -187,6 +190,15 @@ cdef class pObject:
 		free(res)
 
 		return seed
+
+	cpdef Fujiwara1983(self, double r_max, double v_max, double sig_v, long seed):
+		cdef double r_grand
+
+		gb.Fuji_Generate(self.N, r_max, v_max, sig_v, 4.*self.N*self.m/(4.0*np.pi*r_max**3.), self.part.ptr_data, &r_grand, &seed)
+
+		return seed, r_grand
+
+#void Fuji_Generate(const int Nb_part_t1, const double r_max, const double v_max, const double sig_v, const double rho_0, Particule king, double *r_grand, long *seed)
 
 
 cdef class Sphere(pObject):
