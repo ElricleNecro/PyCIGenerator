@@ -4,6 +4,9 @@ from libc.stdlib cimport malloc, free
 cimport cython
 cimport Types
 
+cimport numpy as np
+import numpy as np
+
 cdef class Array2DWrapper:
 	"""Get from : http://gael-varoquaux.info/blog/?p=157
 	"""
@@ -287,6 +290,19 @@ cdef class Particules:
 
 			return res
 
+	property NumpyVelocities:
+		@cython.boundscheck(False)
+		def __get__(self):
+			cdef unsigned int i, j
+			#cdef list res, tmp
+			cdef np.ndarray res = np.zeros((self.N, 3))
+
+			for i in range(self.N):
+				for j in range(3):
+					res[i,j] = self.ptr_data[i].Vit[j]
+
+			return res
+
 	property Positions:
 		@cython.boundscheck(False)
 		def __get__(self):
@@ -299,6 +315,19 @@ cdef class Particules:
 				for j in range(3):
 					tmp.append(self.ptr_data[i].Pos[j])
 				res.append(tmp)
+
+			return res
+
+	property NumpyPositions:
+		@cython.boundscheck(False)
+		def __get__(self):
+			cdef unsigned int i, j
+			#cdef list res, tmp
+			cdef np.ndarray res = np.zeros((self.N, 3))
+
+			for i in range(self.N):
+				for j in range(3):
+					res[i,j] = self.ptr_data[i].Pos[j]
 
 			return res
 
