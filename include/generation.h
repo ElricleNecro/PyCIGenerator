@@ -63,4 +63,6 @@ void	 Homo_Generate(const double rmax, const double vmax, const double m, const 
 void	 HomoGauss_Generate(const double rmax, const double sig, const double m, const double WVir, const int NbPart, Particule res, long *seed);
 void	 HomoGaussLimited_Generate(const double rmax, const double sig, const double broke, const double m, const double WVir, const int NbPart, Particule res, long *seed);
 
+void Fuji_Generate(const int Nb_part_t1, const double r_max, const double v_max, const double sig_v, const double rho_0, Particule king, double *r_grand, long *seed);
+
 #endif /* end of include guard: GENERATION_H */
