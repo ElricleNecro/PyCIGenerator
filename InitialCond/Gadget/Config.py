@@ -2,10 +2,11 @@
 # -*- coding:Utf8 -*-
 
 class Config(object):
+	Param    = dict()
+	filename = None
 	def __init__(self, filename):
 		self.filename = filename
 
-		self.Param = dict()
 		self.Param["InitCondFile"]              = None
 		self.Param["OutputDir"]                 = None
 		self.Param["EnergyFile"]                = "energy.log"
@@ -75,13 +76,13 @@ class Config(object):
 	def __getattr__(self, name):
 		if name in self.Param:
 			return self.Param[name]
-		return getattr(self, name)
+		return super(Config, self).__getattr__(name)
 
 	def __setattr__(self, name, value):
 		if name in self.Param:
 			self.Param[name] = value
 		else:
-			setattr(self, name, value)
+			super(Config, self).__setattr__(name, value)
 
 	def __str__(self):
 		res = str()
@@ -95,7 +96,7 @@ class Config(object):
 	def IsNone(self):
 		res = list()
 		for a in self.Param:
-			if self.Param[a]:
+			if self.Param[a] is None:
 				res += [a]
 
 		return res
