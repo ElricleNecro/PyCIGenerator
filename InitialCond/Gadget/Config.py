@@ -92,7 +92,7 @@ class Config(object):
 	def __repr__(self):
 		return "<%s :: %s -- %d>"%(__name__, self.filename, id(self))
 
-	def None(self):
+	def IsNone(self):
 		res = list()
 		for a in self.Param:
 			if self.Param[a]:
