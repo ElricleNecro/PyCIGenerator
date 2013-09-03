@@ -7,11 +7,8 @@ cimport InitialCond.Types as Types
 from libc.stdlib cimport free
 
 cdef class Gadget:
-	#cdef Types.Particules part
-	#cdef g.Header header
-
 	@cython.boundscheck(False)
-	def __init__(self, filename, format=2):
+	def __init__(self, filename, format=1):
 		cdef unsigned int i
 		self.filename = filename
 
@@ -40,11 +37,6 @@ cdef class Gadget:
 		self.header.flag_stellarage        = 0
 		self.header.flag_metals            = 0
 		self.header.flag_entropy_instead_u = 0
-	#cpdef Set_particules(self, Types.Particules part)
-		#self.part = part
-
-	#def __dealloc__(self):
-		#free(self.filename)
 
 	def __repr__(self):
 		return  """Gadget file '{0}'. Header informations are:
