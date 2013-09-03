@@ -20,3 +20,5 @@ InitialCond/Types.c
 InitialCond/Gadget/Gadget.c
 bak/*
 **/__pycache__/*
+
+InitialCond/Generation/checkers.py
