@@ -72,7 +72,7 @@ cdef class pObject:
 
 	@cython.boundscheck(False)
 	#def __cinit__(self, int N, double m=1.0, int id=0, int Type=1):
-	def __init__(self, int N, double m=1.0, int id=0, int Type=1):
+	def __init__(self, int N, double m=1.0, int id=1, int Type=1):
 		"""Constructeur :
 			N -> Nombre de particule,
 			m = 1.0 -> masse d'une particule,
@@ -148,7 +148,7 @@ cdef class pObject:
 		cdef unsigned int i
 		with open(filename, "w") as f:
 			for i in range(self.N):
-				f.writelines("%g %g %g %g %g %g %g %d\n"%(self.part.ptr_data[i].Pos[0], self.part.ptr_data[i].Pos[1], self.part.ptr_data[i].Pos[2], self.part.ptr_data[i].Vit[0], self.part.ptr_data[i].Pos[1], self.part.ptr_data[i].Pos[2], self.part.ptr_data[i].m, self.part.ptr_data[i].Id))
+				f.writelines("%g %g %g %g %g %g %g %d\n"%(self.part.ptr_data[i].Pos[0], self.part.ptr_data[i].Pos[1], self.part.ptr_data[i].Pos[2], self.part.ptr_data[i].Vit[0], self.part.ptr_data[i].Vit[1], self.part.ptr_data[i].Vit[2], self.part.ptr_data[i].m, self.part.ptr_data[i].Id))
 
 	@cython.boundscheck(False)
 	cpdef gauss(self, double sig, long seed, pos=False, int Id_from=0):
@@ -227,6 +227,8 @@ cdef class Sphere(pObject):
 cdef class Cube(pObject):
 	@cython.boundscheck(False)
 	cpdef homo(self, double r_m, long seed, pos=True, int Id_from=0):
+		"""
+		"""
 		cdef double **res
 		cdef unsigned int i, j
 
