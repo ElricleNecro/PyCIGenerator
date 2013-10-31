@@ -261,6 +261,18 @@ cdef class Particules:
 			raise MemoryError
 		return res
 
+	def Translate(self, to_move):
+		if len(to_move) != 3:
+			raise ValueError("to_move must be of Length 3.")
+
+		self._translate(to_move[0], to_move[1], to_move[2])
+
+	cdef _translate(self, double x, double y, double z):
+		for i in range(self.N):
+			self.ptr_data[i].Pos[0] += x
+			self.ptr_data[i].Pos[1] += y
+			self.ptr_data[i].Pos[2] += z
+
 	@cython.wraparound(False)
 	@cython.boundscheck(False)
 	cpdef SortById(self):
