@@ -2,8 +2,10 @@ cimport King
 from InitialCond.Types cimport Particule
 
 cdef extern from "generation.h":
+	double** carree_smooth(const double rmax, const double smoothing, const int NbPart, long *seed) nogil
 	double** carree_homo(const double rmax, const int NbPart, long *seed) nogil
 
+	double** sphere_smooth(const double rmax, const double smoothing, const int NbPart, long *seed) nogil
 	double** sphere_homo(const double rmax, const int NbPart, long *seed) nogil
 
 	double** gauss(const double sig, const int NbPart, long *seed) nogil

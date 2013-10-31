@@ -1,5 +1,67 @@
 #include "generation.h"
 
+double** carree_smooth(const double rmax, const double smoothing, const int NbPart, long *seed)
+{
+	if( NbPart == 0 )
+		return NULL;
+
+	double **pos    = NULL;
+	double xm       = 0.0,
+	       ym       = 0.0,
+	       zm       = 0.0,
+	       new_rmax = 10.*rmax,
+	       r        = 0.;
+
+	pos = double2d(NbPart, 3);
+
+	/*for (int i = 0; i < NbPart; i++)*/
+	/*{*/
+		/*xx = 1.0-2.0*ran2(seed);*/
+		/*yy = 1.0-2.0*ran2(seed);*/
+		/*zz = 1.0-2.0*ran2(seed);*/
+		/*pos[i][0] = xx*rmax/2.0;*/
+		/*pos[i][1] = yy*rmax/2.0;*/
+		/*pos[i][2] = zz*rmax/2.0;*/
+	/*}*/
+
+	/*int ind = 0;*/
+	/*do*/
+	for(int ind = 0; ind < NbPart; )
+	{
+		pos[ind][0] = (1.0-2.0*ran2(seed))*new_rmax/2.0;
+		pos[ind][1] = (1.0-2.0*ran2(seed))*new_rmax/2.0;
+		pos[ind][2] = (1.0-2.0*ran2(seed))*new_rmax/2.0;
+		r           = sqrt(pos[ind][0]*pos[ind][0] + pos[ind][1]*pos[ind][1] + pos[ind][2]*pos[ind][2]);
+		if( ran2(seed) <= (erf( (rmax - r) / smoothing ) + 1.) / (erf(rmax/smoothing) + 1.) )
+			ind++;
+	}
+	/*} while( ind < NbPart );*/
+
+	xm = 0.0;
+	ym = 0.0;
+	zm = 0.0;
+
+	for (int i = 0; i < NbPart; i++)
+	{
+		xm = xm + pos[i][0];
+		ym = ym + pos[i][1];
+		zm = zm + pos[i][2];
+	}
+
+	xm = xm/(float)(NbPart);
+	ym = ym/(float)(NbPart);
+	zm = zm/(float)(NbPart);
+
+	for (int i = 0; i < NbPart; i++)
+	{
+		pos[i][0] = pos[i][0] - xm;
+		pos[i][1] = pos[i][1] - xm;
+		pos[i][2] = pos[i][2] - xm;
+	}
+
+	return pos;
+}
+
 double** carree_homo(const double rmax, const int NbPart, long *seed)
 {
 	if( NbPart == 0 )
@@ -122,6 +184,58 @@ double** sphere_homo(const double rmax, const int NbPart, long *seed)
 		//ym = ym + pos[i][1];
 		//zm = zm + pos[i][2];
 	//}
+
+	xm = xm/(float)(NbPart);
+	ym = ym/(float)(NbPart);
+	zm = zm/(float)(NbPart);
+
+	for (i = 0; i < NbPart; i++)
+	{
+		pos[i][0] = pos[i][0] - xm;
+		pos[i][1] = pos[i][1] - xm;
+		pos[i][2] = pos[i][2] - xm;
+	}
+
+	return pos;
+}
+
+double** sphere_smooth(const double rmax, const double smoothing, const int NbPart, long *seed)
+{
+	if( NbPart == 0 )
+		return NULL;
+
+	double **pos    = NULL;
+	double xx       = 0.0,
+	       yy       = 0.0,
+	       zz       = 0.0,
+	       xm       = 0.0,
+	       ym       = 0.0,
+	       zm       = 0.0,
+	       r        = 0.0,
+	       new_rmax = 10.*rmax;
+	int i;
+
+	pos = double2d(NbPart, 3);
+
+	for (i = 0; i < NbPart; )//i++)
+	{
+		xx = pow(ran2(seed), 1.0/3.0) * new_rmax;	// Rayon
+		yy = 2.0*M_PI * ran2(seed);		// Phi entre 0, 2\pi
+		zz = acos(1. - 2.0*ran2(seed));		// Theta entre 0, \pi
+
+		pos[i][0] = xx * sin(zz) * cos(yy);
+		pos[i][1] = xx * sin(zz) * sin(yy);
+		pos[i][2] = xx * cos(zz);
+
+		/*r         = sqrt(pos[i][0]*pos[i][0] + pos[i][1]*pos[i][1] + pos[i][2]*pos[i][2]);*/
+		if( ran2(seed) <= (erf( (rmax - xx) / smoothing ) + 1.) / (erf(rmax/smoothing) + 1.) )
+		{
+			xm = xm + pos[i][0];
+			ym = ym + pos[i][1];
+			zm = zm + pos[i][2];
+			i++;
+		}
+	}
 
 	xm = xm/(float)(NbPart);
 	ym = ym/(float)(NbPart);

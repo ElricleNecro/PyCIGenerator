@@ -25,6 +25,8 @@ typedef struct {
  */
 double** carree_homo(const double rmax, const int NbPart, long *seed);
 
+double** carree_smooth(const double rmax, const double smoothing, const int NbPart, long *seed);
+
 /**
  * Fonction générant des particules réparties de façon homogène dans une sphère.
  *
@@ -34,6 +36,8 @@ double** carree_homo(const double rmax, const int NbPart, long *seed);
  * @return Tableau de dimension [NbPart][3] contenant les coordonnées générées.
  */
 double** sphere_homo(const double rmax, const int NbPart, long *seed);
+
+double** sphere_smooth(const double rmax, const double smoothing, const int NbPart, long *seed);
 
 /**
  * Fonction générant des particules réparties de selon une gaussienne dans une sphère.

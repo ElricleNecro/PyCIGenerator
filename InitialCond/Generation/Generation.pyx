@@ -1,4 +1,5 @@
 cimport cython
+cimport cython.parallel as cp
 
 #import  numpy as np
 #cimport numpy as np
@@ -201,6 +202,59 @@ cdef class pObject:
 
 #void Fuji_Generate(const int Nb_part_t1, const double r_max, const double v_max, const double sig_v, const double rho_0, Particule king, double *r_grand, long *seed)
 
+
+cdef class SmoothedSphere(pObject):
+	@cython.boundscheck(False)
+	cpdef homo(self, double r_m, double smoothing, long seed, pos=True, int Id_from=0):
+		"""Generate a homogeneous sphere smoothed with an error function.
+		r_m : Size of the sphere,
+		smoothing: smoothing radius,
+		seed: seed value to use.
+		"""
+		cdef double **res
+		cdef unsigned int i, j
+
+		res = gb.sphere_smooth(r_m, smoothing, self.N, &seed)
+
+		if pos:
+			for i in range(self.N):
+				for j in range(3):
+					self.part.ptr_data[i].Pos[j] = res[i][j]
+		else:
+			for i in range(self.N):
+				for j in range(3):
+					self.part.ptr_data[i].Vit[j] = res[i][j]
+
+		free(res[0])
+		free(res)
+
+		return seed
+
+	#@cython.boundscheck(False)
+	#cpdef homo_parallel(self, double r_m, double smoothing, long seed, pos=True, int Id_from=0, nbthread=2):
+		#cdef double **res
+		#cdef unsigned int i, j
+		#cdef int local_N = self.N
+
+		#with nogil, cp.parallel():
+			#local_N = self.N / nbthread
+			#if self.N % nbthread != 0 and omp.omp_get_num_threads() < self.N % nbthread:
+				#local_N += 1
+			#res = gb.sphere_smooth(r_m, smoothing, local_N, &seed)
+
+		#if pos:
+			#for i in range(self.N):
+				#for j in range(3):
+					#self.part.ptr_data[i].Pos[j] = res[i][j]
+		#else:
+			#for i in range(self.N):
+				#for j in range(3):
+					#self.part.ptr_data[i].Vit[j] = res[i][j]
+
+		#free(res[0])
+		#free(res)
+
+		#return seed
 
 cdef class Sphere(pObject):
 	@cython.boundscheck(False)
