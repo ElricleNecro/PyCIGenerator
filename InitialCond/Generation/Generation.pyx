@@ -103,10 +103,15 @@ cdef class pObject:
 	cdef Types.Particules _get_part(self):
 		return self.part
 
+	cdef _set_part(self, Types.Particules part):
+		self.part = part
+
 	property Part:
 		def __get__(self):
 			if self.part.ptr_data is not NULL:
 				return self._get_part()
+		def __set__(self, part):
+			self._set_part(part)
 
 	@cython.boundscheck(False)
 	cpdef GetViriel(self, int NbMin=15, double accept=0.5, double soft=0.0, G=None):
@@ -230,31 +235,50 @@ cdef class SmoothedSphere(pObject):
 
 		return seed
 
-	#@cython.boundscheck(False)
-	#cpdef homo_parallel(self, double r_m, double smoothing, long seed, pos=True, int Id_from=0, nbthread=2):
-		#cdef double **res
-		#cdef unsigned int i, j
-		#cdef int local_N = self.N
+	@cython.boundscheck(False)
+	cpdef homo_parallel(self, double r_m, double smoothing, long seed, bint pos=True, int nbthread=2):
+		cdef double **res
+		cdef unsigned int i, j
+		#cdef int *local_N, id
+		#cdef long local_seed, *tab_seed
 
-		#with nogil, cp.parallel():
-			#local_N = self.N / nbthread
-			#if self.N % nbthread != 0 and omp.omp_get_num_threads() < self.N % nbthread:
+		#tab_seed = <long*>malloc(sizeof(long) * nbthread)
+
+		#for i in range(nbthread):
+			#tab_seed[i] = gb.ran2(&seed)
+
+		#with nogil:
+			#id = cp.threadid()
+			#local_seed = tab_seed[id]
+			#local_N = <int*>malloc(sizeof(int) * 1)
+
+			#local_N = self.N // nbthread
+			#if self.N % nbthread != 0 and id < self.N % nbthread:
+				#local_N += 1
+		res = gb.sphere_smooth_parallel(r_m, smoothing, self.N, nbthread, &seed)
+
+		if pos:
+			for i in range(self.N):
+				for j in range(3):
+					self.part.ptr_data[i].Pos[j] = res[i][j]
+		else:
+			for i in range(self.N):
+				for j in range(3):
+					self.part.ptr_data[i].Vit[j] = res[i][j]
+		#with nogil, cp.parallel(num_threads=nbthread):
+			#id = cp.threadid()
+			#local_seed = tab_seed[id]
+			#local_N = <int*>malloc(sizeof(int) * 1)
+
+			#local_N = self.N // nbthread
+			#if self.N % nbthread != 0 and id < self.N % nbthread:
 				#local_N += 1
 			#res = gb.sphere_smooth(r_m, smoothing, local_N, &seed)
 
-		#if pos:
-			#for i in range(self.N):
-				#for j in range(3):
-					#self.part.ptr_data[i].Pos[j] = res[i][j]
-		#else:
-			#for i in range(self.N):
-				#for j in range(3):
-					#self.part.ptr_data[i].Vit[j] = res[i][j]
+		free(res[0])
+		free(res)
 
-		#free(res[0])
-		#free(res)
-
-		#return seed
+		return seed
 
 cdef class Sphere(pObject):
 	@cython.boundscheck(False)

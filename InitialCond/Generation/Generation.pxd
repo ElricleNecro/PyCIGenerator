@@ -1,10 +1,19 @@
 cimport King
 from InitialCond.Types cimport Particule
 
+cdef extern from "king/rand.h":
+	float ran2(long *idum) nogil
+
 cdef extern from "generation.h":
 	double** carree_smooth(const double rmax, const double smoothing, const int NbPart, long *seed) nogil
 	double** carree_homo(const double rmax, const int NbPart, long *seed) nogil
 
+	double** sphere_smooth_parallel(
+			const double rmax,
+			const double smoothing,
+			const int NbPart,
+			const int nb_thread,
+			long *seed)
 	double** sphere_smooth(const double rmax, const double smoothing, const int NbPart, long *seed) nogil
 	double** sphere_homo(const double rmax, const int NbPart, long *seed) nogil
 
