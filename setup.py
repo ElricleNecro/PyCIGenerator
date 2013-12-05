@@ -5,11 +5,12 @@
 # All necessary import:
 #--------------------------------------------------------------------------------------------------------------
 import os, sys, stat
+import numpy as np
 
 try:
 	import King
 except ImportError:
-	print("It seems that the python Binding for the king librairies is not installed on your system.\n You should install it as it is a necessary dependancy!")
+	print("It seems that the python Binding for the king librairies is not installed on your system.\nYou should install it as it is a necessary dependancy!")
 	sys.exit(-1)
 
 try:
@@ -53,11 +54,12 @@ def makeExtension(extName, test=False, **kwargs):
 
 	opt_dict = dict(
 		include_dirs = ["."],   # adding the '.' to include_dirs is CRUCIAL!!
-		extra_compile_args = ["-std=c99"],
-		extra_link_args = ['-g'],
+		extra_compile_args = ["-fopenmp", "-std=c99"],
+		extra_link_args = ['-fopenmp'],
 		libraries = [],
 		cython_include_dirs = [
-			os.path.join(os.getenv("HOME"), '.local/lib/python' + ".".join([ str(a) for a in sys.version_info[:2]]) + '/site-packages/Cython/Includes')
+			King.get_include(),
+			#os.path.join(os.getenv("HOME"), '.local/lib/python' + ".".join([ str(a) for a in sys.version_info[:2]]) + '/site-packages/Cython/Includes')
 		]
 	)
 
@@ -88,18 +90,20 @@ for name in extNames:
 			opt["include_dirs"] += [ "include/" ]
 		else:
 			opt["include_dirs"]  = [ "include/" ]
+		opt["include_dirs"] += [ np.get_include() ]
+		opt["cython_include_dirs"] = [ King.get_include() ]
 		opt["cython_directives"] = {
 					"embedsignature" : True,
 					"language_level" : 3
 				}
 		extensions.append( makeExtension(name, **opt) )
-	elif "Gadget" in name:
+	elif "Gadget" in name or "Types" in name or "Tree" in name:
 		opt = pkgconfig("iogadget")
-		opt["cython_include_dirs"] = [ King.get_include() ]
 		if "include_dirs" in opt:
 			opt["include_dirs"] += [ "include/" ]
 		else:
 			opt["include_dirs"]  = [ "include/" ]
+		opt["include_dirs"] += [ np.get_include() ]
 		opt["cython_directives"] = {
 					"embedsignature" : True,
 					"language_level" : 3
