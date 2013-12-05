@@ -1,0 +1,4 @@
+* Add clear documentation (using sphinx?)
+* Clear unused code.
+* Fusion King module.
+* Fusion Analysis code (+ cythonization?).
