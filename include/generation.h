@@ -2,6 +2,9 @@
 
 #define GENERATION_H
 
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 #include <stdio.h>
 #include <tgmath.h>
 #include <king/isotherm.h>
@@ -38,6 +41,13 @@ double** carree_smooth(const double rmax, const double smoothing, const int NbPa
 double** sphere_homo(const double rmax, const int NbPart, long *seed);
 
 double** sphere_smooth(const double rmax, const double smoothing, const int NbPart, long *seed);
+
+double** sphere_smooth_parallel(
+		const double rmax,
+		const double smoothing,
+		const int NbPart,
+		const int nb_thread,
+		long *seed);
 
 /**
  * Fonction générant des particules réparties de selon une gaussienne dans une sphère.

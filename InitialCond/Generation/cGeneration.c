@@ -1,4 +1,5 @@
 #include "generation.h"
+#include <stdbool.h>
 
 double** carree_smooth(const double rmax, const double smoothing, const int NbPart, long *seed)
 {
@@ -244,10 +245,178 @@ double** sphere_smooth(const double rmax, const double smoothing, const int NbPa
 	for (i = 0; i < NbPart; i++)
 	{
 		pos[i][0] = pos[i][0] - xm;
-		pos[i][1] = pos[i][1] - xm;
-		pos[i][2] = pos[i][2] - xm;
+		pos[i][1] = pos[i][1] - ym;
+		pos[i][2] = pos[i][2] - zm;
 	}
 
+	return pos;
+}
+
+
+#define IM1 2147483563
+#define IM2 2147483399
+#define AM (1.0/IM1)
+#define IMM1 (IM1-1)
+#define IA1 40014
+#define IA2 40692
+#define IQ1 53668
+#define IQ2 52774
+#define IR1 12211
+#define IR2 3791
+#define NTAB 32
+#define NDIV (1+IMM1/NTAB)
+#define EPS 1.2e-7
+#define RNMX (1.0-EPS)
+
+static float p_ran2(long *idum)
+{
+	int         j;
+	long        k;
+	static long idum2 = 123456789;
+	static long iy    = 0;
+	static long iv[NTAB];
+	float       temp;
+
+#pragma omp threadprivate(idum2,iy,iv)
+
+	if( *idum <= 0 )
+	{							// Initialize.
+		if( -(*idum) < 1 )
+			*idum = 1;				// Be sure to prevent idum = 0.
+		else
+			*idum = -(*idum);
+
+		idum2  = (*idum);
+
+		for(j = NTAB + 7; j >= 0; j--)
+		{						// Load the shuﬄe table (after 8 warm-ups).
+			k     = (*idum) / IQ1;
+			*idum = IA1 * (*idum - k * IQ1) - k * IR1;
+			if( *idum < 0 )
+				*idum += IM1;
+			if( j < NTAB )
+				iv[j]  = *idum;
+		}
+		iy     = iv[0];
+	}
+	k     = (*idum) / IQ1;					// Start here when not initializing.
+	*idum = IA1 * (*idum - k * IQ1) - k * IR1;		// Compute idum=(IA1*idum) % IM1 without
+	if(*idum < 0)
+		*idum += IM1;					// overﬂows by Schrage’s method.
+	k     = idum2 / IQ2;
+	idum2 = IA2 * (idum2 - k * IQ2) - k * IR2;		// Compute idum2=(IA2*idum) % IM2 likewise.
+	if(idum2 < 0)
+		idum2 += IM2;
+	j     = iy / NDIV;					// Will be in the range 0..NTAB-1.
+	iy    = iv[j] - idum2;					// Here idum is shuﬄed, idum and idum2 are
+	iv[j] = *idum;						// combined to generate output.
+	if(iy < 1)
+		iy    += IMM1;
+	if( (temp = AM * iy) > RNMX)
+		return RNMX;					// Because users don’t expect endpoint values.
+	else
+		return temp;
+}
+
+double** sphere_smooth_parallel(
+		const double rmax,
+		const double smoothing,
+		const int NbPart,
+		const int nb_thread,
+		long *seed)
+{
+	if( NbPart == 0 )
+		return NULL;
+
+	double **pos    = NULL;
+	double xx       = 0.0,
+	       yy       = 0.0,
+	       zz       = 0.0,
+	       xm       = 0.0,
+	       ym       = 0.0,
+	       zm       = 0.0,
+	       new_rmax = 10.*rmax;
+	long *tab_seed  = NULL;
+	long i_tab = NULL;
+	int i, id,j;
+	bool test;
+
+	pos      = double2d(NbPart, 3);
+	tab_seed = (long*)malloc(sizeof(long)*nb_thread);
+	for(i=0; i<nb_thread; i++)
+		tab_seed[i] = rand(); //p_ran2(seed);
+#ifdef _OPENMP
+	omp_set_num_threads(nb_thread);
+#endif
+
+	#pragma omp parallel shared(pos,tab_seed,new_rmax,seed,xm,ym,zm) \
+			     private(i,id,xx,yy,zz,i_tab,test,j) \
+			     default(none)
+	{
+#ifdef _OPENMP
+		id = omp_get_thread_num();
+		printf("Thread: %d\n", id);
+#else
+		id = 0;
+#endif
+		#pragma omp for schedule(dynamic) reduction(+:xm,ym,zm)
+		for (i = 0; i < NbPart; i++)
+		{
+			do
+			{
+				i_tab = tab_seed[id];
+				xx = pow(p_ran2(&i_tab), 1.0/3.0) * new_rmax;	// Rayon
+				tab_seed[id] = i_tab;
+
+				i_tab = tab_seed[id];
+				yy = 2.0*M_PI * p_ran2(&i_tab);			// Phi entre 0, 2\pi
+				tab_seed[id] = i_tab;
+
+				i_tab = tab_seed[id];
+				zz = acos(1. - 2.0*p_ran2(&i_tab));		// Theta entre 0, \pi
+				tab_seed[id] = i_tab;
+
+				pos[i][0] = xx * sin(zz) * cos(yy);
+				pos[i][1] = xx * sin(zz) * sin(yy);
+				pos[i][2] = xx * cos(zz);
+
+				i_tab = tab_seed[id];
+				test = !( p_ran2(&i_tab) <= (erf( (rmax - xx) / smoothing ) + 1.) / (erf(rmax/smoothing) + 1.) );
+				//test = !( p_ran2(&i_tab) <= (( (rmax - xx) / smoothing ) + 1.) / ((rmax/smoothing) + 1.) );
+				tab_seed[id] = i_tab;
+
+			}
+			while( test );
+
+			xm = xm + pos[i][0];
+			ym = ym + pos[i][1];
+			zm = zm + pos[i][2];
+		}
+	}
+
+	xm = xm/(float)(NbPart);
+	ym = ym/(float)(NbPart);
+	zm = zm/(float)(NbPart);
+
+	#pragma omp parallel shared(pos,tab_seed,new_rmax,seed,xm,ym,zm) \
+			     private(i,id,xx,yy,zz) \
+			     default(none)
+	{
+#ifdef _OPENMP
+		id = omp_get_thread_num();
+#else
+		id=0;
+#endif
+		#pragma omp for schedule(dynamic)
+		for (i = 0; i < NbPart; i++)
+		{
+			pos[i][0] = pos[i][0] - xm;
+			pos[i][1] = pos[i][1] - ym;
+			pos[i][2] = pos[i][2] - zm;
+		}
+	}
+
+	free(tab_seed);
 	return pos;
 }
 
