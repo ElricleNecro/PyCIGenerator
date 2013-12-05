@@ -24,6 +24,7 @@ cdef extern from "tree.h":
 
 cpdef SetG(double G)
 cpdef double GetG()
+cpdef CreateOctTree(Types.Particules part, int NbMin, Types.Particules center, double taille)
 
 cdef class OctTree:
 	cdef TNoeud root

@@ -9,6 +9,9 @@ cpdef SetG(double G):
 cpdef double GetG():
 	return t.Tree_GetG()
 
+cpdef CreateOctTree(Types.Particules part, int NbMin, Types.Particules center, double taille):
+	return OctTree(part, NbMin, center, taille)
+
 cdef class OctTree:
 	def __cinit__(self, Types.Particules posvits, int NbMin, Types.Particules center, double taille):
 		self.set_data(posvits.ptr_data, posvits.N, NbMin, center.ptr_data[0], taille)
