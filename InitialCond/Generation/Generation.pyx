@@ -60,7 +60,7 @@ cdef class pObject:
 
 	Elle s'occupe d'allouer le tableau de particules dans le membre Part de la classe.
 
-	En bonus, elle fournit 2 méthodes permettant de calculer le rapport du Viriel de 
+	En bonus, elle fournit 2 méthodes permettant de calculer le rapport du Viriel de
 	l'objet généré et un méthode permettant, en jouant sur les vitesses, de ramener ce
 	rapport à une valeur choisie.
 
@@ -133,11 +133,11 @@ cdef class pObject:
 		tree = Tree.OctTree(self.part, NbMin, Types.FromPyData([[0., 0., 0., 0., 0., 0.]]), taille)
 
 		return tree._get_viriel(accept, soft)
-	
+
 	@cython.boundscheck(False)
 	cpdef SetViriel(self, double Vir, int NbMin=15, double accept=0.5, double soft=0.0, G=None):
 		cdef double OldVir = self.GetViriel(NbMin, accept, soft, G)
-		cdef double fact = 0. #Vir / 
+		cdef double fact = 0. #Vir /
 		cdef unsigned int i, j
 
 		if OldVir == 0.:

@@ -20,7 +20,7 @@ double Tree_GetG(void)
 
 void Echange(Particule_d a, Particule_d b)
 {
-	Part tmp;
+	struct _particule_data_d tmp;
 
 	memcpy(&tmp, a, sizeof(struct _particule_data_d));
 	memcpy(a,    b, sizeof(struct _particule_data_d));

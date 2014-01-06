@@ -13,7 +13,7 @@ cdef extern from "tree.h":
 		_tnoeud* parent
 		_tnoeud* frere
 		_tnoeud* fils
-	
+
 	ctypedef _tnoeud* TNoeud
 
 	void Tree_SetG(double nG) nogil
@@ -32,6 +32,5 @@ cdef class OctTree:
 
 	cdef set_data(self, Types.Particule_d posvits, int Nb, int NbMin, Types._particule_data_d center, double taille)
 	cpdef double CalcPotential(self, double accept, double soft)
-	#def Get_Viriel(self, accept=?, soft=?)
 	cpdef double _get_viriel(self, double accept=?, double soft=?)
 

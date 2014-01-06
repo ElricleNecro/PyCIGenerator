@@ -54,7 +54,7 @@ def makeExtension(extName, test=False, **kwargs):
 
 	opt_dict = dict(
 		include_dirs = ["."],   # adding the '.' to include_dirs is CRUCIAL!!
-		extra_compile_args = ["-fopenmp", "-std=c99"],
+		extra_compile_args = ["-fopenmp", "-std=c99"], #, "-DP_DBG_TREECODE_P_CALC2"],
 		extra_link_args = ['-fopenmp'],
 		libraries = [],
 		cython_include_dirs = [

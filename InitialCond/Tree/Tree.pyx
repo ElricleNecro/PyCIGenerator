@@ -48,7 +48,6 @@ cdef class OctTree:
 		for i in range(self.root.N):
 			pot += self.root[0].first[i].m * t.Tree_CalcPot(self.root, &self.root[0].first[i], accept, soft)
 			v   += 0.5 * self.root[0].first[i].m * ( self.root[0].first[i].Vit[0]*self.root[0].first[i].Vit[0] + self.root[0].first[i].Vit[1]*self.root[0].first[i].Vit[1] + self.root[0].first[i].Vit[2]*self.root[0].first[i].Vit[2] )
-			#print(pot, v)
 
 		pot /= 2.0
 
