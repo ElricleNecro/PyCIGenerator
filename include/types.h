@@ -36,8 +36,8 @@ Part* Part1d(const int n) __attribute__ ((__const__));
 
 /**
  * Fonction additionnant 2 particules.
- * @param a Particule a.
- * @param b Particule b.
+ * @param a Particule_d a.
+ * @param b Particule_d b.
  * @return La somme de a et b.
  */
 Part  Part_add(Part a, Part b) __attribute ((__const__));
@@ -69,18 +69,18 @@ int    qsort_partaxe(const void *a, const void *b) __attribute__ ((__const__));
  * @param *a Pointeur sur le premier élément du tableau ligne à échanger
  * @param *b Pointeur sur le premier élément du tableau ligne avec qui échanger
  */
-void   Echange(Particule a, Particule b);
+void   Echange(Particule_d a, Particule_d b);
 
 /**
- * Fonction concaténant 2 tableaux de type Particule et retourne le nouveau tableau.
+ * Fonction concaténant 2 tableaux de type Particule_d et retourne le nouveau tableau.
  * @param a Premier tableau à concaténer.
  * @param Na Taille du premier tableau.
  * @param b Second tableau à concaténer.
  * @param Nb Taille du second tableau.
  * @return NULL si l'allocation échoue, le nouveau pointeur sinon.
  */
-Particule Concat(const Particule a, const int Na, const Particule b, const int Nb);
+Particule_d Concat(const Particule_d a, const int Na, const Particule_d b, const int Nb);
 
-void sort_by_id(Particule tab, const int N);
+void sort_by_id(Particule_d tab, const int N);
 
 #endif /* end of include guard: TYPES_H */

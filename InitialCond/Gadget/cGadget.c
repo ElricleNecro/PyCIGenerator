@@ -20,6 +20,7 @@ void float1d_libere(float *ptf)
 	return ;
 }
 
+#if 0
 Particule Gadget_Read(const char *fname, Header *header, int files, bool b_potential, bool b_acceleration, bool b_rate_entropy, bool b_timestep)
 {
 	FILE *fd;
@@ -922,5 +923,5 @@ bool write_gadget_conf( const char  *filename,
 //
 //	return 0;
 //}
-
+#endif
 

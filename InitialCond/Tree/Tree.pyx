@@ -16,7 +16,7 @@ cdef class OctTree:
 	def __cinit__(self, Types.Particules posvits, int NbMin, Types.Particules center, double taille):
 		self.set_data(posvits.ptr_data, posvits.N, NbMin, center.ptr_data[0], taille)
 
-	cdef set_data(self, Types.Particule posvits, int Nb, int NbMin, Types._particule_data center, double taille):
+	cdef set_data(self, Types.Particule_d posvits, int Nb, int NbMin, Types._particule_data_d center, double taille):
 		self.NbMin = NbMin
 		self.N = Nb
 		self.root = t.Create_Tree(posvits, Nb, NbMin, center, taille)

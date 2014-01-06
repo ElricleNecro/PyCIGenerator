@@ -12,7 +12,7 @@
 
 #include "types.h"
 
-bool Gadget_Write(const char *name, const Header header, const Particule part);
-Particule Gadget_Read(const char *fname, Header *header, int files, bool b_potential, bool b_acceleration, bool b_rate_entropy, bool b_timestep);
+//bool Gadget_Write(const char *name, const Header header, const Particule part);
+//Particule Gadget_Read(const char *fname, Header *header, int files, bool b_potential, bool b_acceleration, bool b_rate_entropy, bool b_timestep);
 
 #endif /* end of include guard: GADGET_H */

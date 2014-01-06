@@ -18,16 +18,16 @@ double Tree_GetG(void)
 	return G;
 }
 
-void Echange(Particule a, Particule b)
+void Echange(Particule_d a, Particule_d b)
 {
 	Part tmp;
 
-	memcpy(&tmp, a, sizeof(struct _particule_data));
-	memcpy(a,    b, sizeof(struct _particule_data));
-	memcpy(b, &tmp, sizeof(struct _particule_data));
+	memcpy(&tmp, a, sizeof(struct _particule_data_d));
+	memcpy(a,    b, sizeof(struct _particule_data_d));
+	memcpy(b, &tmp, sizeof(struct _particule_data_d));
 }
 
-TNoeud Create_Tree(Particule posvits, const int NbPart, const int NbMin, const struct _particule_data Center, const double taille)
+TNoeud Create_Tree(Particule_d posvits, const int NbPart, const int NbMin, const struct _particule_data_d Center, const double taille)
 {
 	TNoeud root = NULL;
 	root        = Tree_Init(NbPart, Center.Pos[0], Center.Pos[1], Center.Pos[2], taille);
@@ -44,7 +44,7 @@ TNoeud Create_Tree(Particule posvits, const int NbPart, const int NbMin, const s
 	return root;
 }
 
-int NotIn(struct _particule_data cherch, Particule Tab, const int NbVois)
+int NotIn(struct _particule_data_d cherch, Particule_d Tab, const int NbVois)
 {
 	for(int i = 0; i < NbVois; i++)
 		if( Tab[i].Id == cherch.Id )
@@ -382,7 +382,7 @@ int Tree_Build2(TNoeud root, int NbPart, int NbMin)
 }
 
 #ifdef PERIODIC
-/*inline*/ double Tree_Dist(const TNoeud root, const Particule part, const double BS)
+/*inline*/ double Tree_Dist(const TNoeud root, const Particule_d part, const double BS)
 {
 	// Calcul des distances particules--cube :
 	double dx = 0.0,
@@ -412,7 +412,7 @@ int Tree_Build2(TNoeud root, int NbPart, int NbMin)
 	return sqrt(dx*dx + dy*dy + dz*dz);
 }
 #else
-/*inline*/ double Tree_Dist(const TNoeud root, const Particule part)
+/*inline*/ double Tree_Dist(const TNoeud root, const Particule_d part)
 {
 	double dx = 0.0,
 	       dy = 0.0,
@@ -449,7 +449,7 @@ int Tree_Build2(TNoeud root, int NbPart, int NbMin)
 }
 #endif
 
-double Tree_ExactPot(const TNoeud root, const Particule part, const double soft)
+double Tree_ExactPot(const TNoeud root, const Particule_d part, const double soft)
 {
 	double pot = 0.0;
 
@@ -467,7 +467,7 @@ double Tree_ExactPot(const TNoeud root, const Particule part, const double soft)
 	return pot;
 }
 
-double Tree_ApproxPot(const TNoeud root, const Particule part, const double soft)
+double Tree_ApproxPot(const TNoeud root, const Particule_d part, const double soft)
 {
 	double x = 0.0,
 	       y = 0.0,
@@ -487,15 +487,15 @@ double Tree_ApproxPot(const TNoeud root, const Particule part, const double soft
 
 #ifdef PERIODIC
 #	ifdef __bool_true_false_are_defined
-/*inline*/ bool Tree_Accept(const TNoeud root, const Particule part, const double accept, const double BS)
+/*inline*/ bool Tree_Accept(const TNoeud root, const Particule_d part, const double accept, const double BS)
 #	else
-/*inline*/ int Tree_Accept(const TNoeud root, const Particule part, const double accept, const double BS)
+/*inline*/ int Tree_Accept(const TNoeud root, const Particule_d part, const double accept, const double BS)
 #	endif
 #else
 #	ifdef __bool_true_false_are_defined
-/*inline*/ bool Tree_Accept(const TNoeud root, const Particule part, const double accept)
+/*inline*/ bool Tree_Accept(const TNoeud root, const Particule_d part, const double accept)
 #	else
-/*inline*/ int Tree_Accept(const TNoeud root, const Particule part, const double accept)
+/*inline*/ int Tree_Accept(const TNoeud root, const Particule_d part, const double accept)
 #	endif
 #endif
 {
@@ -517,9 +517,9 @@ double Tree_ApproxPot(const TNoeud root, const Particule part, const double soft
 }
 
 #ifdef PERIODIC
-double Tree_CalcPot(TNoeud root, const Particule part, const double accept, const double soft, const double BS)
+double Tree_CalcPot(TNoeud root, const Particule_d part, const double accept, const double soft, const double BS)
 #else
-double Tree_CalcPot(TNoeud root, const Particule part, const double accept, const double soft)
+double Tree_CalcPot(TNoeud root, const Particule_d part, const double accept, const double soft)
 #endif
 {
 	double pot = 0.0;

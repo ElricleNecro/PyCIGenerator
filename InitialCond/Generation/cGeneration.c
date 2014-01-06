@@ -529,7 +529,7 @@ void King_gene(const King Amas, const int Nb_part_t1, double *r_grand, double **
 		i, rejet, (float)(rejet)/(float)(rejet + i)*100.0, (float)(i)/(float)(rejet + i)*100.0, *r_grand, Amas.amas.rmax, 2.0 * (*r_grand  / 3.086e16) / pow(Nb_part_t1, 1.0/3.0) * 0.05, 2.0 * (*r_grand  / 3.086e16) / pow(Nb_part_t1, 1.0/3.0) * 0.05);
 }
 
-void King_Generate(const King Amas, const int Nb_part_t1, double *r_grand, Particule king, long *seed)
+void King_Generate(const King Amas, const int Nb_part_t1, double *r_grand, Particule_d king, long *seed)
 {
 	double normal    = King_distrib(&Amas, Amas.amas.m * King_don_pot(&Amas, 0));
 	//long   seed      = -32;
@@ -611,7 +611,7 @@ static inline double Fuji_distrib(const double r, const double u, const double j
 	return rho_0 * pow( 2.*M_PI*sig_v*sig_v, -3.0/2.0) * exp(- (u*u + j*j/(r*r)) / (2.*sig_v*sig_v) );
 }
 
-void Fuji_Generate(const int Nb_part_t1, const double r_max, const double v_max, const double sig_v, const double rho_0, Particule king, double *r_grand, long *seed)
+void Fuji_Generate(const int Nb_part_t1, const double r_max, const double v_max, const double sig_v, const double rho_0, Particule_d king, double *r_grand, long *seed)
 {
 	unsigned int i = 0,
 		     k = 0;

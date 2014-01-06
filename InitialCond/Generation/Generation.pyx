@@ -32,7 +32,7 @@ cdef class GKing(King.KingModel):
 		if self.N == 0:
 			raise ValueError("You should call setM or SolveAll before calling this method.")
 
-		part = <Types._particule_data *>malloc( self.N * sizeof(Types._particule_data))
+		part = <Types._particule_data_d *>malloc( self.N * sizeof(Types._particule_data_d))
 
 		gb.King_Generate(self._obj, self.N, &self.r_grand, part, &seed)
 
@@ -85,7 +85,7 @@ cdef class pObject:
 		self.m    = m
 		if self.N <= 0:
 			raise ValueError("N cannot be negative or null.")
-		part = <Types._particule_data *>malloc( self.N * sizeof(Types._particule_data))
+		part = <Types._particule_data_d *>malloc( self.N * sizeof(Types._particule_data_d))
 		if part is NULL:
 			raise MemoryError()
 		self.part = Types.FromPointer(part, self.N)
@@ -205,7 +205,7 @@ cdef class pObject:
 
 		return seed, r_grand
 
-#void Fuji_Generate(const int Nb_part_t1, const double r_max, const double v_max, const double sig_v, const double rho_0, Particule king, double *r_grand, long *seed)
+#void Fuji_Generate(const int Nb_part_t1, const double r_max, const double v_max, const double sig_v, const double rho_0, Particule_d king, double *r_grand, long *seed)
 
 
 cdef class SmoothedSphere(pObject):
@@ -336,5 +336,5 @@ cdef class Cube(pObject):
 
 	#return ret
 
-	#part = <gb._particule_data *>malloc( self.N * sizeof(gb._particule_data))
+	#part = <gb._particule_data_d *>malloc( self.N * sizeof(gb._particule_data_d))
 

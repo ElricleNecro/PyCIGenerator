@@ -1,4 +1,4 @@
-#from InitialCond.Types cimport _particule_data, Particule
+#from InitialCond.Types cimport _particule_data_d, Particule_d
 cimport InitialCond.Types as Types
 
 cdef extern from "tree.h":
@@ -7,8 +7,8 @@ cdef extern from "tree.h":
 		int    level
 		double x, y, z
 		double cote
-		Types.Particule first
-		Types._particule_data cm
+		Types.Particule_d first
+		Types._particule_data_d cm
 		double CM
 		_tnoeud* parent
 		_tnoeud* frere
@@ -18,8 +18,8 @@ cdef extern from "tree.h":
 
 	void Tree_SetG(double nG) nogil
 	double Tree_GetG() nogil
-	TNoeud Create_Tree(Types.Particule posvits, const int NbParticule, const int NbMin, const Types._particule_data center, const double taille) nogil
-	double Tree_CalcPot(TNoeud root, const Types.Particule part, const double accept, const double soft) nogil
+	TNoeud Create_Tree(Types.Particule_d posvits, const int NbParticule_d, const int NbMin, const Types._particule_data_d center, const double taille) nogil
+	double Tree_CalcPot(TNoeud root, const Types.Particule_d part, const double accept, const double soft) nogil
 	void Tree_Free(TNoeud root) nogil
 
 cpdef SetG(double G)
@@ -30,7 +30,7 @@ cdef class OctTree:
 	cdef TNoeud root
 	cdef int NbMin, N
 
-	cdef set_data(self, Types.Particule posvits, int Nb, int NbMin, Types._particule_data center, double taille)
+	cdef set_data(self, Types.Particule_d posvits, int Nb, int NbMin, Types._particule_data_d center, double taille)
 	cpdef double CalcPotential(self, double accept, double soft)
 	#def Get_Viriel(self, accept=?, soft=?)
 	cpdef double _get_viriel(self, double accept=?, double soft=?)

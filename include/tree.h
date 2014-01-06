@@ -48,8 +48,8 @@ struct _tnoeud {
 	int    level;			/*< Niveau du noeud dans l'arbre.*/
 	double x, y, z;			/*< Coordonnées du centre géometrique du carré.*/
 	double cote;			/*< Longueur du côté du carré.*/
-	Particule first;			/*< Pointeur vers la particule du tableau de particule.*/
-	struct _particule_data cm;			/*< Position du centre de masse de la cellule.*/
+	Particule_d first;			/*< Pointeur vers la particule du tableau de particule.*/
+	struct _particule_data_d cm;			/*< Position du centre de masse de la cellule.*/
 	double CM;			/*< Masse totale dans la cellule.*/
 	struct _tnoeud* parent;		/*< Pointeur vers le noeud parent.*/
 	struct _tnoeud* frere;		/*< Pointeur vers le frére de gauche.*/
@@ -67,12 +67,12 @@ void   Tree_var(const int LMax);
 
 /**
  * Fonction vérifiant que la particule "cherch" ne se trouve pas dans le tableau de particule "Tab".
- * @param cherch Particule recherché
+ * @param cherch Particule_d recherché
  * @param *Tab Tableau de particule
  * @param NbVois Taille du tableau de particule
  * @return 0 si la particule est dans le tableau, 1 sinon.
  */
-int    NotIn(struct _particule_data cherch, Particule Tab, const int NbVois);
+int    NotIn(struct _particule_data_d cherch, Particule_d Tab, const int NbVois);
 
 /**
  * Fonction chargé d'initialiser la racine ou un nœud qeulconque pour le Tree Code.
@@ -112,9 +112,9 @@ int    Tree_Build2(TNoeud root, int NbPart, int NbMin);
  * @param N Taille du tableau contenant les particules à insérer.
  * @param Tab Tableau dans lequel on souhaite insérer les particules de *insert si possible.
  * @param NbVois Taille du second tableau
- * @param part Particule dont on cherche les voisins
+ * @param part Particule_d dont on cherche les voisins
  */
-void   CalcVois(Particule insert, const int N, Particule Tab, const int NbVois, const Particule part, const double BS);
+void   CalcVois(Particule_d insert, const int N, Particule_d Tab, const int NbVois, const Particule_d part, const double BS);
 #else
 /**
  * Fonction de calcul des voisins par défaut, version 3d.
@@ -122,9 +122,9 @@ void   CalcVois(Particule insert, const int N, Particule Tab, const int NbVois, 
  * @param N Taille du tableau contenant les particules à insérer.
  * @param Tab Tableau dans lequel on souhaite insérer les particules de *insert si possible.
  * @param NbVois Taille du second tableau
- * @param part Particule dont on cherche les voisins
+ * @param part Particule_d dont on cherche les voisins
  */
-void   CalcVois(Particule insert, const int N, Particule Tab, const int NbVois, const Particule part);
+void   CalcVois(Particule_d insert, const int N, Particule_d Tab, const int NbVois, const Particule_d part);
 #endif
 
 #ifdef PERIODIC
@@ -137,9 +137,9 @@ void   CalcVois(Particule insert, const int N, Particule Tab, const int NbVois, 
  * @param Tab Tableau contenant les voisins (il doit être initialisé
  * avec des particules, sans critére de choix particulier).
  * @param NbVois Nombre de voisin.
- * @param part Particule dont on veut les voisins.
+ * @param part Particule_d dont on veut les voisins.
  */
-void   Tree_Voisin(TNoeud root, Particule Tab, int NbVois, const Particule part, const double BS);
+void   Tree_Voisin(TNoeud root, Particule_d Tab, int NbVois, const Particule_d part, const double BS);
 #else
 /**
  * Fonction parcourant le tree-code pour en calculer les voisins.
@@ -150,9 +150,9 @@ void   Tree_Voisin(TNoeud root, Particule Tab, int NbVois, const Particule part,
  * @param Tab Tableau contenant les voisins (il doit être initialisé
  * avec des particules, sans critére de choix particulier).
  * @param NbVois Nombre de voisin.
- * @param part Particule dont on veut les voisins.
+ * @param part Particule_d dont on veut les voisins.
  */
-void   Tree_Voisin(TNoeud root, Particule Tab, int NbVois, const Particule part);
+void   Tree_Voisin(TNoeud root, Particule_d Tab, int NbVois, const Particule_d part);
 #endif
 
 /**
@@ -186,7 +186,7 @@ void   Tree_Free (TNoeud root);
  * @param BS Taille de la boîte.
  * @param soft Softening à appliquer lors du calcul du potentiel.
  */
-double Tree_CalcPot(TNoeud root, const Particule part, const double accept, const double soft, const double BS);
+double Tree_CalcPot(TNoeud root, const Particule_d part, const double accept, const double soft, const double BS);
 #else
 /**
  * Fonction se servant du Tree-Code pour calculer le potentiel.
@@ -195,11 +195,11 @@ double Tree_CalcPot(TNoeud root, const Particule part, const double accept, cons
  * @param accept Critère d'acceptation des particules (angle d'ouverture du Tree Code).
  * @param soft Softening à appliquer lors du calcul du potentiel.
  */
-double Tree_CalcPot(TNoeud root, const Particule part, const double accept, const double soft);
+double Tree_CalcPot(TNoeud root, const Particule_d part, const double accept, const double soft);
 #endif
 
 void Tree_SetG(double nG);
 double Tree_GetG(void);
-TNoeud Create_Tree(Particule posvits, const int NbPart, const int NbMin, const struct _particule_data Center, const double taille);
+TNoeud Create_Tree(Particule_d posvits, const int NbPart, const int NbMin, const struct _particule_data_d Center, const double taille);
 
 #endif //__TREE_H_200112_155224

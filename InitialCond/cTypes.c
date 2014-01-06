@@ -62,58 +62,38 @@ int qsort_partaxe(const void *a, const void *b)
 
 int by_id(const void *a, const void *b)
 {
-	const struct _particule_data *p1 = (const struct _particule_data*)a,
-				     *p2 = (const struct _particule_data*)b;
+	const struct _particule_data_d *p1 = (const struct _particule_data_d*)a,
+				       *p2 = (const struct _particule_data_d*)b;
 	return p1->Id - p2->Id;
 }
 
-void sort_by_id(Particule tab, const int N)
+void sort_by_id(Particule_d tab, const int N)
 {
-	qsort(tab, N, sizeof(struct _particule_data), by_id);
+	qsort(tab, N, sizeof(struct _particule_data_d), by_id);
 }
 
-Particule Concat(const Particule a, const int Na, const Particule b, const int Nb)
+Particule_d Concat(const Particule_d a, const int Na, const Particule_d b, const int Nb)
 {
-	Particule new = malloc( sizeof(struct _particule_data) * (Na + Nb) );
+	Particule_d new = malloc( sizeof(struct _particule_data_d) * (Na + Nb) );
 	if(new == NULL)
 	{
 		perror("Concat Error:");
 		return NULL;
 	}
 
-	memcpy(new,      a, Na * sizeof(struct _particule_data));
-	memcpy(&new[Na], b, Nb * sizeof(struct _particule_data));
+	memcpy(new,      a, Na * sizeof(struct _particule_data_d));
+	memcpy(&new[Na], b, Nb * sizeof(struct _particule_data_d));
 
 	return new;
 }
 
-void Echange(Particule a, Particule b)
+void Echange(Particule_d a, Particule_d b)
 {
-	struct _particule_data tmp;
+	struct _particule_data_d tmp;
 
-	memcpy(&tmp, a, sizeof(struct _particule_data));
-	memcpy(a,    b, sizeof(struct _particule_data));
-	memcpy(b, &tmp, sizeof(struct _particule_data));
-/*	Part tmp;
-
-	tmp.x  = a->x;
-	tmp.y  = a->y;
-	tmp.z  = a->z;
-	tmp.r  = a->r;
-	tmp.id = a->id;
-
-	a->x   = b->x;
-	a->y   = b->y;
-	a->z   = b->z;
-	a->r   = b->r;
-	a->id  = b->id;
-
-	b->x   = tmp.x;
-	b->y   = tmp.y;
-	b->z   = tmp.z;
-	b->r   = tmp.r;
-	b->id  = tmp.id;
-// */
+	memcpy(&tmp, a, sizeof(struct _particule_data_d));
+	memcpy(a,    b, sizeof(struct _particule_data_d));
+	memcpy(b, &tmp, sizeof(struct _particule_data_d));
 }
 
 

@@ -63,10 +63,10 @@ cdef class Array1DWrapper:
 #-----------------------------------------------------------------------------------------------------------
 # Classes et fonctions travaillant autour du type _particule_data :
 #-----------------------------------------------------------------------------------------------------------
-cdef Particule_Data _PD_FromValue(Types._particule_data val):
+cdef Particule_Data _PD_FromValue(Types._particule_data_d val):
 	cdef Particule_Data res
 	# Allocation de la particule :
-	cdef Types.Particule ptr = <Types._particule_data *>malloc(sizeof(Types._particule_data))
+	cdef Types.Particule_d ptr = <Types._particule_data_d *>malloc(sizeof(Types._particule_data_d))
 
 	# copie de la valeur :
 	ptr[0] = val
@@ -80,7 +80,7 @@ cdef Particule_Data _PD_FromValue(Types._particule_data val):
 
 	return res
 
-cdef Particule_Data _PD_FromPointer( Types.Particule ptr):
+cdef Particule_Data _PD_FromPointer( Types.Particule_d ptr):
 	cdef Particule_Data res
 
 	# On crée la classe Wrapper autour de la structure _particule_data :
@@ -94,7 +94,7 @@ cdef Particule_Data _PD_FromPointer( Types.Particule ptr):
 
 # Classe permettant de jouer en python avec les structures _particule_data :
 cdef class Particule_Data:
-	cdef _particule_data* ptr_data
+	cdef _particule_data_d* ptr_data
 	cdef bint from_ptr
 
 	def __dealloc__(self):
@@ -183,7 +183,7 @@ cdef class Particule_Data:
 #-----------------------------------------------------------------------------------------------------------
 @cython.wraparound(False)
 @cython.boundscheck(False)
-cdef Particules FromPointer(Types.Particule p, int N):
+cdef Particules FromPointer(Types.Particule_d p, int N):
 	tmp = Particules()
 
 	tmp.set_data(p, N)
@@ -192,11 +192,11 @@ cdef Particules FromPointer(Types.Particule p, int N):
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
-cdef Particules Single(Types._particule_data p):
-	cdef Types.Particule tmp = NULL
+cdef Particules Single(Types._particule_data_d p):
+	cdef Types.Particule_d tmp = NULL
 	res = Particules()
 
-	tmp = <Types._particule_data *>malloc( sizeof(Types._particule_data))
+	tmp = <Types._particule_data_d *>malloc( sizeof(Types._particule_data_d))
 	if tmp is NULL:
 		raise MemoryError()
 
@@ -209,9 +209,9 @@ cdef Particules Single(Types._particule_data p):
 @cython.wraparound(False)
 @cython.boundscheck(False)
 cpdef FromPyData(lst, colType=None, colm=None, colId=None):
-	cdef Types.Particule tmp = NULL
+	cdef Types.Particule_d tmp = NULL
 
-	tmp = <Types._particule_data *>malloc(len(lst)* sizeof(Types._particule_data))
+	tmp = <Types._particule_data_d *>malloc(len(lst)* sizeof(Types._particule_data_d))
 	if tmp is NULL:
 		raise MemoryError()
 
@@ -244,7 +244,7 @@ cdef class Particules_iterator:
 		return Particule_Data.FromPointer()
 
 cdef class Particules:
-	cdef set_data(self, Particule p, int N):
+	cdef set_data(self, Particule_d p, int N):
 		self.N        = N
 		self.ptr_data = p
 
@@ -379,7 +379,7 @@ cdef class Particules:
 			#return res
 
 	def __repr__(self):
-		ret = "<Particules Object %p"%id(self)
+		ret = "<Particules Object %x"%id(self)
 		if self.N > 0 or self.ptr_data is not NULL:
 			ret += " from id=%d"%self.ptr_data[0].Id + " to %d>"%self.ptr_data[self.N-1].Id
 		else:

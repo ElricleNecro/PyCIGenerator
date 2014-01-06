@@ -81,35 +81,35 @@ The only gadget file format supported is the gadget 1.
 	def __str__(self):
 		return self.__repr__()
 
-	@cython.wraparound(False)
-	@cython.boundscheck(False)
-	cpdef int OldWrite(self):
-		cdef int res
-		cdef unsigned int i
-		cdef char *fname = <bytes>self.filename.encode()
-		if self.part.ptr_data == NULL:
-			raise MemoryError("Particules array not allocate.")
-		for i in range(6):
-			self.header.npartTotal[i] = self.header.npart[i]
-		res = g.Gadget_Write(fname, self.header, self.part.ptr_data)
-		return res
+	#@cython.wraparound(False)
+	#@cython.boundscheck(False)
+	#cpdef int OldWrite(self):
+		#cdef int res
+		#cdef unsigned int i
+		#cdef char *fname = <bytes>self.filename.encode()
+		#if self.part.ptr_data == NULL:
+			#raise MemoryError("Particules array not allocate.")
+		#for i in range(6):
+			#self.header.npartTotal[i] = self.header.npart[i]
+		#res = g.Gadget_Write(fname, self.header, self.part.ptr_data)
+		#return res
 
-	@cython.wraparound(False)
-	@cython.boundscheck(False)
-	cpdef OldRead(self, int num_files, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
-		cdef int N = 0
-		cdef unsigned int i
-		cdef char *fname = <bytes>self.filename.encode()
-		cdef Types.Particule part
+	#@cython.wraparound(False)
+	#@cython.boundscheck(False)
+	#cpdef OldRead(self, int num_files, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
+		#cdef int N = 0
+		#cdef unsigned int i
+		#cdef char *fname = <bytes>self.filename.encode()
+		#cdef Types.Particule part
 
-		part = g.Gadget_Read(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
-		if part is NULL:
-			raise MemoryError
+		#part = g.Gadget_Read(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
+		#if part is NULL:
+			#raise MemoryError
 		
-		for i in range(6):
-			N += self.header.npart[i]
+		#for i in range(6):
+			#N += self.header.npart[i]
 
-		self.part = Types.FromPointer(part, N)
+		#self.part = Types.FromPointer(part, N)
 
 	cpdef int _write_format1(self):
 		cdef int res
@@ -119,7 +119,7 @@ The only gadget file format supported is the gadget 1.
 			raise MemoryError("Particules array not allocate.")
 		for i in range(6):
 			self.header.npartTotal[i] = self.header.npart[i]
-		res = g.Gadget_Write_format1(fname, self.header, self.part.ptr_data)
+		res = g.Double_Gadget_Write_format1(fname, self.header, self.part.ptr_data)
 		return res
 
 	cpdef int _write_format2(self):
@@ -130,16 +130,16 @@ The only gadget file format supported is the gadget 1.
 			raise MemoryError("Particules array not allocate.")
 		for i in range(6):
 			self.header.npartTotal[i] = self.header.npart[i]
-		res = g.Gadget_Write_format2(fname, self.header, self.part.ptr_data)
+		res = g.Double_Gadget_Write_format2(fname, self.header, self.part.ptr_data)
 		return res
 
 	cpdef _read_format1(self, int num_files, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
 		cdef int N = 0
 		cdef unsigned int i
 		cdef char *fname = <bytes>self.filename.encode()
-		cdef Types.Particule part
+		cdef Types.Particule_d part
 
-		part = g.Gadget_Read_format1(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
+		part = g.Double_Gadget_Read_format1(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
 		if part is NULL:
 			raise MemoryError
 		
@@ -152,9 +152,9 @@ The only gadget file format supported is the gadget 1.
 		cdef int N = 0
 		cdef unsigned int i
 		cdef char *fname = <bytes>self.filename.encode()
-		cdef Types.Particule part
+		cdef Types.Particule_d part
 
-		part = g.Gadget_Read_format2(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
+		part = g.Double_Gadget_Read_format2(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
 		if part is NULL:
 			raise MemoryError
 		
