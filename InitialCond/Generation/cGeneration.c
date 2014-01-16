@@ -524,9 +524,6 @@ void King_gene(const King Amas, const int Nb_part_t1, double *r_grand, double **
 	vz/=Nb_part_t1;
 
 	printf("%g\t%g\t%g\n%g\t%g\t%g\n", x, y, z, vx, vy, vz);
-
-	printf("\033[36mPour le King :\n\tParticule accepté : %d\n\tParticule rejeté : %d\n\t%g %% particules rejetées et %g %% d'accepté.\n\tRayon de l'amas %g (%g)\n\tParametre de Softening conseillé : %g pc (%g)\n\033[00m",
-		i, rejet, (float)(rejet)/(float)(rejet + i)*100.0, (float)(i)/(float)(rejet + i)*100.0, *r_grand, Amas.amas.rmax, 2.0 * (*r_grand  / 3.086e16) / pow(Nb_part_t1, 1.0/3.0) * 0.05, 2.0 * (*r_grand  / 3.086e16) / pow(Nb_part_t1, 1.0/3.0) * 0.05);
 }
 
 void King_Generate(const King Amas, const int Nb_part_t1, double *r_grand, Particule_d king, long *seed)
@@ -601,9 +598,6 @@ void King_Generate(const King Amas, const int Nb_part_t1, double *r_grand, Parti
 		king[j].Pos[1] -= y;
 		king[j].Pos[2] -= z;
 	}
-
-	printf("\033[36mPour le King :\n\tParticule accepté : %d\n\tParticule rejeté : %ld\n\t%g %% particules rejetées et %g %% d'accepté.\n\tRayon de l'amas %g (%g)\n\tParametre de Softening conseillé : %g pc (%g)\n\033[00m",
-		i, rejet, (float)(rejet)/(float)(rejet + i)*100.0, (float)(i)/(float)(rejet + i)*100.0, *r_grand, Amas.amas.rmax, 2.0 * (*r_grand  / 3.086e16) / pow(Nb_part_t1, 1.0/3.0) * 0.05, 2.0 * (*r_grand  / 3.086e16) / pow(Nb_part_t1, 1.0/3.0) * 0.05);
 }
 
 static inline double Fuji_distrib(const double r, const double u, const double j, const double sig_v, const double rho_0)
