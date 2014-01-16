@@ -23,7 +23,7 @@ cdef class Array2DWrapper:
 		size: int
 		Length of the array.
 		data_ptr: void*
-		Pointer to the data            
+		Pointer to the data
 		"""
 		self.data_ptr = data_ptr
 		self.size[0] = size[0]
@@ -45,7 +45,7 @@ cdef class Array1DWrapper:
 		size: int
 		Length of the array.
 		data_ptr: void*
-		Pointer to the data            
+		Pointer to the data
 		"""
 		self.data_ptr = data_ptr
 		self.size = size
@@ -125,7 +125,7 @@ cdef class Particule_Data:
 			return self.ptr_data[0].Id
 		def __set__(self, val):
 			self.ptr_data[0].Id = val
-	
+
 	property Mass:
 		def __get__(self):
 			return self.ptr_data[0].m
@@ -272,6 +272,18 @@ cdef class Particules:
 			self.ptr_data[i].Pos[0] += x
 			self.ptr_data[i].Pos[1] += y
 			self.ptr_data[i].Pos[2] += z
+
+	def AddVelocity(self, to_move):
+		if len(to_move) != 3:
+			raise ValueError("to_move must be of Length 3.")
+
+		self._velocity(to_move[0], to_move[1], to_move[2])
+
+	cdef _velocity(self, double x, double y, double z):
+		for i in range(self.N):
+			self.ptr_data[i].Vit[0] += x
+			self.ptr_data[i].Vit[1] += y
+			self.ptr_data[i].Vit[2] += z
 
 	@cython.wraparound(False)
 	@cython.boundscheck(False)

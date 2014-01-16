@@ -44,6 +44,7 @@ cdef class Particules:
 	cdef bint b_potential, b_acceleration, b_rate_entropy, b_timestep
 	cdef set_data(self, Particule_d p, int N)
 	cdef _translate(self, double x, double y, double z)
+	cdef _velocity(self, double x, double y, double z)
 	cpdef Particules Add(self, Particules b)
 	cpdef SortById(self)
 
