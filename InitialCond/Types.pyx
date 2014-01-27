@@ -267,7 +267,10 @@ cdef class Particules:
 
 		self._translate(to_move[0], to_move[1], to_move[2])
 
-	cdef _translate(self, double x, double y, double z):
+	@cython.wraparound(False)
+	@cython.boundscheck(False)
+	cpdef _translate(self, double x, double y, double z):
+		cdef unsigned int i
 		for i in range(self.N):
 			self.ptr_data[i].Pos[0] += x
 			self.ptr_data[i].Pos[1] += y
@@ -279,7 +282,10 @@ cdef class Particules:
 
 		self._velocity(to_move[0], to_move[1], to_move[2])
 
-	cdef _velocity(self, double x, double y, double z):
+	@cython.wraparound(False)
+	@cython.boundscheck(False)
+	cpdef _velocity(self, double x, double y, double z):
+		cdef unsigned int i
 		for i in range(self.N):
 			self.ptr_data[i].Vit[0] += x
 			self.ptr_data[i].Vit[1] += y
