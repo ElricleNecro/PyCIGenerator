@@ -1,9 +1,6 @@
 cimport cython
 cimport cython.parallel as cp
 
-#import  numpy as np
-#cimport numpy as np
-
 cimport libc.math as m
 
 from libc.stdlib cimport malloc, free
