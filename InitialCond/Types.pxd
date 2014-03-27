@@ -33,6 +33,7 @@ cdef extern from "types.h":
 	void Echange(Particule_d a, Particule_d b)
 	Particule_d Concat(const Particule_d a, const int Na, const Particule_d b, const int Nb)
 	void sort_by_id(Particule_d tab, const int N)
+	void sort_by_type(Particule_d tab, const int N)
 
 cdef Particules FromPointer(Particule_d p, int N)
 cdef Particules Single(_particule_data_d p)
@@ -47,4 +48,5 @@ cdef class Particules:
 	cpdef _velocity(self, double x, double y, double z)
 	cpdef Particules Add(self, Particules b)
 	cpdef SortById(self)
+	cpdef SortByType(self)
 

@@ -72,6 +72,20 @@ void sort_by_id(Particule_d tab, const int N)
 	qsort(tab, N, sizeof(struct _particule_data_d), by_id);
 }
 
+int by_type(const void *a, const void *b)
+{
+	const struct _particule_data_d *p1 = (const struct _particule_data_d*)a,
+				       *p2 = (const struct _particule_data_d*)b;
+	if( p1->Type == p2->Type )
+		return p1->Id - p2->Id;
+	return p1->Type - p2->Type;
+}
+
+void sort_by_type(Particule_d tab, const int N)
+{
+	qsort(tab, N, sizeof(struct _particule_data_d), by_type);
+}
+
 Particule_d Concat(const Particule_d a, const int Na, const Particule_d b, const int Nb)
 {
 	Particule_d new = malloc( sizeof(struct _particule_data_d) * (Na + Nb) );

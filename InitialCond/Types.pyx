@@ -296,6 +296,11 @@ cdef class Particules:
 	cpdef SortById(self):
 		sort_by_id(self.ptr_data, self.N)
 
+	@cython.wraparound(False)
+	@cython.boundscheck(False)
+	cpdef SortByType(self):
+		sort_by_type(self.ptr_data, self.N)
+
 	def __getitem__(self, key):
 		if isinstance(key, slice) or key < 0 or key >= self.N:
 			raise IndexError("Index not supported!")
