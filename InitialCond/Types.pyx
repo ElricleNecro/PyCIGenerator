@@ -389,6 +389,29 @@ cdef class Particules:
 
 			return res
 
+	property TimeStep:
+		@cython.boundscheck(False)
+		def __get__(self):
+			cdef unsigned int i
+			cdef list res
+
+			res = list()
+			for i in range(self.N):
+				res.append(self.ptr_data[i].ts)
+
+			return res
+
+	property NumpyTimeStep:
+		@cython.boundscheck(False)
+		def __get__(self):
+			cdef unsigned int i
+			cdef np.ndarray res = np.zeros(self.N)
+
+			for i in range(self.N):
+				res[i] = self.ptr_data[i].ts
+
+			return res
+
 	#property Identities:
 		#@cython.boundscheck(False)
 		#def __get__(self):
