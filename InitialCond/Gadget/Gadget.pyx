@@ -18,7 +18,7 @@ cdef class Gadget:
 		elif format == 2:
 			self.Write = self._write_format2
 			self.Read  = self._read_format2
-		
+
 		for i in range(6):
 			self.header.npart[i]              = 0
 			self.header.mass[i]               = 0.
@@ -105,7 +105,7 @@ The only gadget file format supported is the gadget 1.
 		#part = g.Gadget_Read(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
 		#if part is NULL:
 			#raise MemoryError
-		
+
 		#for i in range(6):
 			#N += self.header.npart[i]
 
@@ -134,6 +134,13 @@ The only gadget file format supported is the gadget 1.
 		return res
 
 	cpdef _read_format1(self, int num_files, bint bpot=0, bint bacc=0, bint bdadt=0, bint bdt=0):
+		""" Parameter:
+			num_files = number of file composing a snapshot
+			bpot = reading potential
+			bacc = reading acceleration
+			bdadt = reading rate of entropy production
+			bdt = reading timestep
+		"""
 		cdef int N = 0
 		cdef unsigned int i
 		cdef char *fname = <bytes>self.filename.encode()
@@ -142,7 +149,7 @@ The only gadget file format supported is the gadget 1.
 		part = g.Double_Gadget_Read_format1(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
 		if part is NULL:
 			raise MemoryError
-		
+
 		for i in range(6):
 			N += self.header.npart[i]
 
@@ -157,7 +164,7 @@ The only gadget file format supported is the gadget 1.
 		part = g.Double_Gadget_Read_format2(fname, &self.header, num_files, bpot, bacc, bdadt, bdt)
 		if part is NULL:
 			raise MemoryError
-		
+
 		for i in range(6):
 			N += self.header.npart[i]
 
