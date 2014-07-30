@@ -1,3 +1,6 @@
+cimport numpy as np
+import numpy as np
+
 cimport cython
 cimport Gadget as g
 
@@ -213,7 +216,7 @@ The only gadget file format supported is the gadget 1.
 	property mass:
 		@cython.boundscheck(False)
 		def __get__(self):
-			res = [0]*6
+			res = np.array([0.]*6)
 			for i in range(6):
 				res[i] = self.header.mass[i]
 			return res
