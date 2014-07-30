@@ -411,11 +411,10 @@ cdef class Particules:
         @cython.boundscheck(False)
         def __get__(self):
             cdef unsigned int i
-            cdef np.ndarray res = np.zeros(self.N)#, np.float64)
+            cdef np.ndarray res = np.zeros(self.N)
 
             for i in range(self.N):
                 res[i] = self.ptr_data[i].ts
-                print self.ptr_data[i].ts
 
             return res
 
