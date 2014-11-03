@@ -25,3 +25,4 @@ InitialCond/Generation/checkers.py
 venv/*
 
 InitialCond/.ropeproject/
+.ropeproject/
